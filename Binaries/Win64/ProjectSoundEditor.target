@@ -28,6 +28,22 @@
 			"Type": "Executable"
 		},
 		{
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.pdb",
+			"Type": "SymbolFile"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/2D/Paper2D/Binaries/Win64/UE4Editor-Paper2D.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -2368,6 +2384,10 @@
 			"Type": "RequiredResource"
 		},
 		{
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor.modules",
+			"Type": "RequiredResource"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/2D/Paper2D/Binaries/Win64/UE4Editor.modules",
 			"Type": "RequiredResource"
 		},
@@ -2851,6 +2871,10 @@
 	"RuntimeDependencies": [
 		{
 			"Path": "$(ProjectDir)/ProjectSound.uproject",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/ParallelcubeAudioAnalyzer.uplugin",
 			"Type": "UFS"
 		},
 		{

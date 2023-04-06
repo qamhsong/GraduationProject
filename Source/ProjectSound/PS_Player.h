@@ -24,6 +24,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UAudioCaptureComponent* AudioCapture;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UAudioComponent* AudioComponent;
+
 	FAudioDevice* AudioDevice;
 
 protected:
@@ -40,6 +43,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString OutputAudioPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float PitchCoefficient = 2.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SampleRate = 44100;
+
+	TArray<float> FrequenciesToGet;
+
+	TArray<FSoundWaveSpectralData> OutSoundWaveSpectralData;
+
+	bool bIsPlaying;
 
 
 public:	
@@ -59,6 +74,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DeActivateVoiceCapture();
 
-
+	UFUNCTION(BlueprintCallable)
+	void PlayAudio();
 
 };

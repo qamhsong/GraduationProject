@@ -4,8 +4,10 @@
 #include "PS_Player.h"
 #include "PS_GameInstance.h"
 #include "AudioCaptureComponent.h"
+#include "Components/AudioComponent.h"
 #include "Sound/SoundSubmix.h"
 #include "AudioMixerBlueprintLibrary.h"
+#include "AudioAnalyzerManager.h"
 
 // Sets default values
 APS_Player::APS_Player()
@@ -16,9 +18,13 @@ APS_Player::APS_Player()
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
 	SetRootComponent(DefaultSceneRoot);
 
-	AudioCapture = CreateAbstractDefaultSubobject<UAudioCaptureComponent>(TEXT("AudioCapture"));
+	AudioCapture = CreateDefaultSubobject<UAudioCaptureComponent>(TEXT("AudioCapture"));
 	AudioCapture->SetupAttachment(RootComponent);
 	AudioCapture->SetVolumeMultiplier(AudioCaptureVolumeMultiplier);
+	
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
+	AudioComponent->SetupAttachment(RootComponent);
+	
 }
 
 // Called when the game starts or when spawned
@@ -30,12 +36,35 @@ void APS_Player::BeginPlay()
 
 	if(AudioDevice == nullptr)
 		UE_LOG(LogTemp, Warning, TEXT("Cannot Detect Audio Device."));
+
+	FrequenciesToGet.Add(100.f);
+	FrequenciesToGet.Add(500.f);
+	FrequenciesToGet.Add(1000.f);
+	//FrequenciesToGet.Add(3000.f);
+	FrequenciesToGet.Add(5000.f);
 }
 
 // Called every frame
 void APS_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (AudioComponent->IsPlaying())
+	{
+		if(FrequenciesToGet.Num() <= 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Fucked up"));
+			return;
+		}
+		if (AudioComponent->GetCookedFFTData(FrequenciesToGet, OutSoundWaveSpectralData))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Debug %f"), OutSoundWaveSpectralData[0].FrequencyHz));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("NO COOKED FFTDATA")));
+		}
+	}
 
 }
 
@@ -46,6 +75,7 @@ void APS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	PlayerInputComponent->BindAction("ActivateVC", IE_Pressed, this, &APS_Player::ActivateVoiceCapture);
 	PlayerInputComponent->BindAction("DeActivateVC", IE_Pressed, this, &APS_Player::DeActivateVoiceCapture);
+	PlayerInputComponent->BindAction("PlayAudio", IE_Pressed, this, &APS_Player::PlayAudio);
 
 }
 
@@ -62,6 +92,7 @@ void APS_Player::ActivateVoiceCapture()
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	UAudioMixerBlueprintLibrary::StartRecordingOutput(this, 5.f, NewSubmix);
 	
+
 }
 
 void APS_Player::DeActivateVoiceCapture()
@@ -78,6 +109,29 @@ void APS_Player::DeActivateVoiceCapture()
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	USoundWave* ExistingSoundWaveToOverWrite = nullptr;
-	UAudioMixerBlueprintLibrary::StopRecordingOutput(this, EAudioRecordingExportType::SoundWave, FString("soundtest"), FString(""), NewSubmix, ExistingSoundWaveToOverWrite);
+	USoundWave* soundtest = UAudioMixerBlueprintLibrary::StopRecordingOutput(this, EAudioRecordingExportType::SoundWave, FString("soundtest"), FString(""), NewSubmix, ExistingSoundWaveToOverWrite);
+	soundtest->bEnableBakedFFTAnalysis = true;
+	soundtest->FFTSize = ESoundWaveFFTSize::VeryLarge_2048;
+	soundtest->FFTAnalysisFrameSize = 4096;
+	//soundtest->Pitch = 2.f;
+	
+	if (soundtest->IsValidLowLevelFast())
+	{
+		AudioComponent->SetSound(soundtest);
+		UE_LOG(LogTemp, Warning, TEXT("Sound Set to AudioComponent"));
+	}
+
+}
+
+void APS_Player::PlayAudio()
+{
+	if (AudioComponent == nullptr)
+		return;
+
+	AudioComponent->SetPitchMultiplier(PitchCoefficient);
+
+	AudioComponent->Play();
+
+
 }
 

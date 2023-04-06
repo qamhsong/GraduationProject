@@ -48,12 +48,22 @@ public:
 	float PitchCoefficient = 2.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 SampleRate = 44100;
+	int32 SampleRate = 48000;
 
+	// Frequency array for FFT to analyze
 	TArray<float> FrequenciesToGet;
-
+	
+	// Container for storing post FFT data
 	TArray<FSoundWaveSpectralData> OutSoundWaveSpectralData;
 
+	// preset frequency product value of piano key
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<float> FrequencyMultiplier;
+
+	//key value to select
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 DesiredKeyNumber = 5;
+	
 	bool bIsPlaying;
 
 
@@ -76,5 +86,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PlayAudio();
+
+	// convert Frequency value to pitch value.
+	// Frequency & Pitch has an exponential relationship
+	UFUNCTION(BlueprintCallable)
+	float ConvertDesiredFrequencyToPitch(const float _Frequency);
 
 };

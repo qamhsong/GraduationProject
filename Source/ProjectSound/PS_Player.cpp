@@ -42,6 +42,13 @@ void APS_Player::BeginPlay()
 	FrequenciesToGet.Add(1000.f);
 	//FrequenciesToGet.Add(3000.f);
 	FrequenciesToGet.Add(5000.f);
+
+
+	for (int32 i = 1; i <= 12; i++)
+	{
+		FrequencyMultiplier.Add(FMath::Pow(2,((float)(i * 1.f)/ 12.f)));
+	}
+
 }
 
 // Called every frame
@@ -53,7 +60,6 @@ void APS_Player::Tick(float DeltaTime)
 	{
 		if(FrequenciesToGet.Num() <= 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Fucked up"));
 			return;
 		}
 		if (AudioComponent->GetCookedFFTData(FrequenciesToGet, OutSoundWaveSpectralData))
@@ -105,15 +111,19 @@ void APS_Player::DeActivateVoiceCapture()
 		return;
 	}
 		
-
+	// Create Submix & Recording Settings
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	USoundWave* ExistingSoundWaveToOverWrite = nullptr;
 	USoundWave* soundtest = UAudioMixerBlueprintLibrary::StopRecordingOutput(this, EAudioRecordingExportType::SoundWave, FString("soundtest"), FString(""), NewSubmix, ExistingSoundWaveToOverWrite);
+
+	//Fast Fourier Transform setting
 	soundtest->bEnableBakedFFTAnalysis = true;
 	soundtest->FFTSize = ESoundWaveFFTSize::VeryLarge_2048;
 	soundtest->FFTAnalysisFrameSize = 4096;
-	//soundtest->Pitch = 2.f;
+
+	//Adjust Pitch by converting Frequency data
+	soundtest->Pitch = ConvertDesiredFrequencyToPitch(FrequencyMultiplier[DesiredKeyNumber]);
 	
 	if (soundtest->IsValidLowLevelFast())
 	{
@@ -134,4 +144,11 @@ void APS_Player::PlayAudio()
 
 
 }
+
+float APS_Player::ConvertDesiredFrequencyToPitch(const float _Frequency)
+{
+	return FMath::Log2(_Frequency);
+}
+
+
 

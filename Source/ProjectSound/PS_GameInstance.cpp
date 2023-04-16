@@ -2,7 +2,7 @@
 
 
 #include "PS_GameInstance.h"
-#include "AudioAnalyzerManager.h"
+#include "UIManager.h"
 
 TWeakObjectPtr<UPS_GameInstance> UPS_GameInstance::MyGameInstance = nullptr;
 
@@ -10,7 +10,7 @@ void UPS_GameInstance::Init()
 {
 	Super::Init();
 
-	AudioManager = NewObject<UAudioAnalyzerManager>(UAudioAnalyzerManager::StaticClass());
+	//AudioManager = NewObject<UAudioAnalyzerManager>(UAudioAnalyzerManager::StaticClass());
 
 #if UE_EDITOR
 	UPS_GameInstance::MyGameInstance = this;
@@ -20,6 +20,14 @@ void UPS_GameInstance::Init()
 		UPS_GameInstance::MyGameInstance = this;
 	}
 #endif
+
+	PSSingleton->_Init(this);
+
+	UIManager = GetUIManager();
+
+	if(UIManager->IsValidLowLevel() == false)
+		UE_LOG(LogTemp, Warning, TEXT("FAILED TO LOAD UI_MANAGER"));
+
 }
 
 void UPS_GameInstance::Shutdown()

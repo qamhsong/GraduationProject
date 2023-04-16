@@ -6,8 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "PS_GameInstance.generated.h"
 
-class UAudioAnalyzerManager;
 
+class UUIManager;
 
 UCLASS()
 class PROJECTSOUND_API UPS_GameInstance : public UGameInstance
@@ -18,7 +18,8 @@ class PROJECTSOUND_API UPS_GameInstance : public UGameInstance
 	virtual void Shutdown() override;
 	virtual void BeginDestroy() override;
 
-	TWeakObjectPtr<UAudioAnalyzerManager> AudioManager;
+	TWeakObjectPtr<UUIManager> UIManager;
+
 	
 private:
 	static TWeakObjectPtr<UPS_GameInstance> MyGameInstance;

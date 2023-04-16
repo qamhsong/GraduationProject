@@ -7,6 +7,9 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundSubmix.h"
 #include "AudioMixerBlueprintLibrary.h"
+#include "UIManager.h"
+#include "UI_Start.h"
+#include "PS_PlayerController.h"
 #include "AudioAnalyzerManager.h"
 
 // Sets default values
@@ -24,13 +27,41 @@ APS_Player::APS_Player()
 	
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
 	AudioComponent->SetupAttachment(RootComponent);
+	AudioComponent->bAutoActivate = true;
+	AudioComponent->bAlwaysPlay = true;
+
 	
+}
+
+void APS_Player::VoiceCaptureTick()
+{
+
+}
+
+void APS_Player::PlayVoiceCapture()
+{
+
 }
 
 // Called when the game starts or when spawned
 void APS_Player::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetUIManager()->Show<UUI_Start>();
+	GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
+
+	UPS_GameInstance* gInst = GInst();
+	if (gInst == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NO GAME INSTANCE"));
+	}
+	UWorld* world = gInst->GetWorld();
+	if (world == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No WORLD"));
+	}
+	pc = world->GetFirstPlayerController<APS_PlayerController>();
 
 	AudioDevice = FAudioDeviceManager::Get()->GetActiveAudioDevice().GetAudioDevice();
 
@@ -88,6 +119,7 @@ void APS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 void APS_Player::ActivateVoiceCapture()
 {
 	AudioCapture->Activate();
+	
 	if (!AudioDevice)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Cannot Detect Audio Device."));

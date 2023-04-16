@@ -8,6 +8,8 @@
 
 class UAudioCaptureComponent;
 class USoundSubmix;
+class USoundWaveProcedural;
+class APS_PlayerController;
 
 UCLASS()
 class PROJECTSOUND_API APS_Player : public APawn
@@ -27,7 +29,35 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UAudioComponent* AudioComponent;
 
+	UPROPERTY()
+	APS_PlayerController* pc;
+
 	FAudioDevice* AudioDevice;
+
+
+	UPROPERTY()
+		float VoiceCaptureVolume;
+	UPROPERTY()
+		bool PlayVoiceCaptureFlag;
+	UPROPERTY()
+		FTimerHandle VoiceCaptureTickTimer;
+	UPROPERTY()
+		FTimerHandle PlayVoiceCaptureTimer;
+	UPROPERTY()
+		USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
+	UPROPERTY()
+		TArray<uint8> VoiceCaptureBuffer;
+
+	TSharedPtr<class IVoiceCapture> VoiceCapture;
+
+	float VoiceCaptureTime = 0;
+
+	UFUNCTION(BlueprintCallable)
+		void VoiceCaptureTick();
+	UFUNCTION(BlueprintCallable)
+		void PlayVoiceCapture();
+
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,7 +75,7 @@ public:
 	FString OutputAudioPath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float PitchCoefficient = 2.f;
+	float PitchCoefficient = 3.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SampleRate = 48000;

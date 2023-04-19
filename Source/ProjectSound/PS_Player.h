@@ -36,26 +36,26 @@ public:
 
 
 	UPROPERTY()
-		float VoiceCaptureVolume;
+	float VoiceCaptureVolume;
 	UPROPERTY()
-		bool PlayVoiceCaptureFlag;
+	bool PlayVoiceCaptureFlag;
 	UPROPERTY()
-		FTimerHandle VoiceCaptureTickTimer;
+	FTimerHandle VoiceCaptureTickTimer;
 	UPROPERTY()
-		FTimerHandle PlayVoiceCaptureTimer;
+	FTimerHandle PlayVoiceCaptureTimer;
 	UPROPERTY()
-		USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
+	USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
 	UPROPERTY()
-		TArray<uint8> VoiceCaptureBuffer;
+	TArray<uint8> VoiceCaptureBuffer;
 
 	TSharedPtr<class IVoiceCapture> VoiceCapture;
 
 	float VoiceCaptureTime = 0;
 
 	UFUNCTION(BlueprintCallable)
-		void VoiceCaptureTick();
+void VoiceCaptureTick();
 	UFUNCTION(BlueprintCallable)
-		void PlayVoiceCapture();
+	void PlayVoiceCapture();
 
 
 

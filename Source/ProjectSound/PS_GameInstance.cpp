@@ -22,8 +22,8 @@ void UPS_GameInstance::Init()
 #endif
 
 	PSSingleton->_Init(this);
-
 	UIManager = GetUIManager();
+
 
 	if(UIManager->IsValidLowLevel() == false)
 		UE_LOG(LogTemp, Warning, TEXT("FAILED TO LOAD UI_MANAGER"));

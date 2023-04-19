@@ -13,5 +13,5 @@ void UUI_Start::_OnShow()
 {
 	Super::_OnShow();
 	this->AddToViewport();
-	GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
+	GetUIManager()->ApplyInputMode(EUIInputMode::UIOnly);
 }

@@ -15,7 +15,8 @@ class PROJECTSOUND_API UUI_Base : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	
+	// Assign Resource Path.
+	// UI Manager class will create the user interface blueprint which matches the resource path.
 	static constexpr auto RESOURCE_PATH = TEXT("");
 
 	void Create();

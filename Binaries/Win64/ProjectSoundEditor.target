@@ -28,20 +28,28 @@
 			"Type": "Executable"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.dll",
+			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.pdb",
+			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.pdb",
 			"Type": "SymbolFile"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.dll",
+			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.pdb",
+			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.pdb",
 			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/SoundUtilities/Binaries/Win64/UE4Editor-SoundUtilities.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/SoundUtilities/Binaries/Win64/UE4Editor-SoundUtilitiesEditor.dll",
+			"Type": "DynamicLibrary"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/2D/Paper2D/Binaries/Win64/UE4Editor-Paper2D.dll",
@@ -2384,7 +2392,11 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor.modules",
+			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor.modules",
+			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/SoundUtilities/Binaries/Win64/UE4Editor.modules",
 			"Type": "RequiredResource"
 		},
 		{
@@ -2874,7 +2886,11 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/ParallelcubeAudioAnalyzer.uplugin",
+			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/ParallelcubeAudioAnalyzer.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/SoundUtilities/SoundUtilities.uplugin",
 			"Type": "UFS"
 		},
 		{

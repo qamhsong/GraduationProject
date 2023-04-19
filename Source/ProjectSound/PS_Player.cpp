@@ -10,7 +10,9 @@
 #include "UIManager.h"
 #include "UI_Start.h"
 #include "PS_PlayerController.h"
-#include "AudioAnalyzerManager.h"
+//#include "AudioAnalyzerManager.h"
+#include "Sound/SoundEffectSource.h"
+#include "SourceEffects/SourceEffectFilter.h"
 
 // Sets default values
 APS_Player::APS_Player()
@@ -30,7 +32,6 @@ APS_Player::APS_Player()
 	AudioComponent->bAutoActivate = true;
 	AudioComponent->bAlwaysPlay = true;
 
-	
 }
 
 void APS_Player::VoiceCaptureTick()
@@ -130,7 +131,7 @@ void APS_Player::ActivateVoiceCapture()
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	UAudioMixerBlueprintLibrary::StartRecordingOutput(this, 5.f, NewSubmix);
 	
-
+	
 }
 
 void APS_Player::DeActivateVoiceCapture()
@@ -162,6 +163,12 @@ void APS_Player::DeActivateVoiceCapture()
 		AudioComponent->SetSound(soundtest);
 		UE_LOG(LogTemp, Warning, TEXT("Sound Set to AudioComponent"));
 	}
+	//AudioCapture->SourceEffectChain = 
+	//FSourceEffectFilterSettings Filter1;
+	//USoundEffectSourcePresetChain FilterSetting = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass);
+	//Filter1.FilterQ = 2.f;
+
+	PlayAudio();
 
 }
 

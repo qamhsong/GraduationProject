@@ -12,7 +12,7 @@
 #include "PS_PlayerController.h"
 //#include "AudioAnalyzerManager.h"
 #include "Sound/SoundEffectSource.h"
-#include "SourceEffects/SourceEffectFilter.h"
+#include "SourceEffects/SourceEffectStereoDelay.h"
 
 // Sets default values
 APS_Player::APS_Player()
@@ -167,7 +167,8 @@ void APS_Player::DeActivateVoiceCapture()
 	//FSourceEffectFilterSettings Filter1;
 	//USoundEffectSourcePresetChain FilterSetting = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass);
 	//Filter1.FilterQ = 2.f;
-
+	USoundEffectSourcePresetChain * SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
+	
 	PlayAudio();
 
 }

@@ -28,19 +28,19 @@
 			"Type": "Executable"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.dll",
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.pdb",
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeTaglib.pdb",
 			"Type": "SymbolFile"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.dll",
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.pdb",
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor-ParallelcubeAudioAnalyzer.pdb",
 			"Type": "SymbolFile"
 		},
 		{
@@ -2392,7 +2392,7 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor.modules",
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/Binaries/Win64/UE4Editor.modules",
 			"Type": "RequiredResource"
 		},
 		{
@@ -2886,7 +2886,7 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/AudioAnalyzer/ParallelcubeAudioAnalyzer.uplugin",
+			"Path": "$(ProjectDir)/Plugins/Marketplace/AudioAnalyzer/ParallelcubeAudioAnalyzer.uplugin",
 			"Type": "UFS"
 		},
 		{

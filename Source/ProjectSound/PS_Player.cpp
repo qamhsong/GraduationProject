@@ -12,7 +12,8 @@
 #include "PS_PlayerController.h"
 //#include "AudioAnalyzerManager.h"
 #include "Sound/SoundEffectSource.h"
-#include "SourceEffects/SourceEffectStereoDelay.h"
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectStereoDelay.h>
+
 
 // Sets default values
 APS_Player::APS_Player()
@@ -156,20 +157,41 @@ void APS_Player::DeActivateVoiceCapture()
 	soundtest->FFTAnalysisFrameSize = 4096;
 
 	//Adjust Pitch by converting Frequency data
-	soundtest->Pitch = ConvertDesiredFrequencyToPitch(FrequencyMultiplier[DesiredKeyNumber]);
+	//soundtest->Pitch = ConvertDesiredFrequencyToPitch(FrequencyMultiplier[DesiredKeyNumber]);
 	
 	if (soundtest->IsValidLowLevelFast())
 	{
 		AudioComponent->SetSound(soundtest);
 		UE_LOG(LogTemp, Warning, TEXT("Sound Set to AudioComponent"));
 	}
-	//AudioCapture->SourceEffectChain = 
-	//FSourceEffectFilterSettings Filter1;
-	//USoundEffectSourcePresetChain FilterSetting = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass);
-	//Filter1.FilterQ = 2.f;
-	USoundEffectSourcePresetChain * SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
+
+	SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
+
+	StereoDelaySettings.DelayMode = DelayMode;
+	StereoDelaySettings.DelayTimeMsec = StereoDelayTime;
+	StereoDelaySettings.bFilterEnabled = bEnableFilter;
+	StereoDelaySettings.FilterType = FilterType;
+	StereoDelaySettings.FilterFrequency = CutoffFilterFrequency;
+	StereoDelaySettings.FilterQ = FilterQualityFactor;
+
+	DelayPreset = NewObject<USourceEffectStereoDelayPreset>(USourceEffectStereoDelayPreset::StaticClass());
+
+
+	DelayPreset->SetSettings(StereoDelaySettings);
+	FSourceEffectChainEntry ChainEntry;
+	ChainEntry.bBypass = true;
+	ChainEntry.Preset = DelayPreset;
 	
-	PlayAudio();
+
+	SourceChain->Chain.Emplace(ChainEntry);
+	if(SourceChain->Chain.Num() > 0)
+		AudioComponent->SetSourceEffectChain(SourceChain);
+	else
+		UE_LOG(LogTemp,Warning, TEXT("Failed To Add Chain Entry"));
+
+
+
+//	PlayAudio();
 
 }
 
@@ -178,7 +200,7 @@ void APS_Player::PlayAudio()
 	if (AudioComponent == nullptr)
 		return;
 
-	AudioComponent->SetPitchMultiplier(PitchCoefficient);
+	//AudioComponent->SetPitchMultiplier(PitchCoefficient);
 
 	AudioComponent->Play();
 

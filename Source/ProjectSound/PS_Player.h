@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "SourceEffects/SourceEffectStereoDelay.h"
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectStereoDelay.h>
 #include "PS_Player.generated.h"
 
 class UAudioCaptureComponent;
 class USoundSubmix;
 class USoundWaveProcedural;
 class APS_PlayerController;
+class USoundEffectSourcePresetChain;
 
 UCLASS()
 class PROJECTSOUND_API APS_Player : public APawn
@@ -33,6 +36,15 @@ public:
 	APS_PlayerController* pc;
 
 	FAudioDevice* AudioDevice;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USoundEffectSourcePresetChain*  SourceChain;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectStereoDelayPreset* DelayPreset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FSourceEffectStereoDelaySettings StereoDelaySettings;
 
 
 	UPROPERTY()
@@ -95,6 +107,30 @@ public:
 	int32 DesiredKeyNumber = 5;
 	
 	bool bIsPlaying;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StereoDelayTime = 2000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EStereoDelaySourceEffect DelayMode = EStereoDelaySourceEffect::PingPong;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DelayRatio = 0.2f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bEnableFilter = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EStereoDelayFiltertype FilterType = EStereoDelayFiltertype::Lowpass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CutoffFilterFrequency = 1000.f;
+
+	// The higher the Q the more resonant the filter, and the narrower the range of frequencies that are allowed to pass.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FilterQualityFactor = 3.0f;
+
 
 
 public:	

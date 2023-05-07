@@ -34,7 +34,7 @@ public:
 	TMap<UUI_Base*, float> _UIPool;
 
 	UPROPERTY()
-	EUIInputMode _CurrentInputMode = EUIInputMode::GameAndUI;
+	EUIInputMode _CurrentInputMode = EUIInputMode::UIOnly;
 
 	EUIInputMode ApplyInputMode(EUIInputMode NewInputMode);
 

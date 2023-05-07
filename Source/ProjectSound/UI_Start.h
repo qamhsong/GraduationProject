@@ -9,7 +9,10 @@
 /**
  * 
  */
-UCLASS()
+
+ class UPSButton;
+
+UCLASS(BlueprintType, Blueprintable)
 class PROJECTSOUND_API UUI_Start : public UUI_Base
 {
 	GENERATED_BODY()
@@ -20,4 +23,13 @@ public:
 protected:
 	virtual void _OnCreate();
 	virtual void _OnShow();
+
+public:
+	UPROPERTY(meta = (BindWidget))
+	UPSButton* btn_Start;
+
+	UFUNCTION()
+	void _OnClickStart(UPSButton* sender);
+
+
 };

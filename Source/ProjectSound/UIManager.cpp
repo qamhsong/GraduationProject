@@ -68,6 +68,9 @@ EUIInputMode UUIManager::ApplyInputMode(EUIInputMode NewInputMode)
 	case EUIInputMode::UIOnly:
 	{
 		UWidgetBlueprintLibrary::SetInputMode_UIOnlyEx(pc);
+		FInputModeGameAndUI	InputMode;
+		InputMode.SetHideCursorDuringCapture(false);
+		pc->SetInputMode(InputMode);
 		pc->SetShowMouseCursor(true);
 	}
 	break;

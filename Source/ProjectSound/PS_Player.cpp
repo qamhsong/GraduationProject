@@ -51,7 +51,7 @@ void APS_Player::BeginPlay()
 	Super::BeginPlay();
 
 	GetUIManager()->Show<UUI_Start>();
-	GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
+	//GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
 
 	UPS_GameInstance* gInst = GInst();
 	if (gInst == nullptr)

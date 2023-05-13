@@ -21,8 +21,10 @@ public:
 
 	void Create();
 	void Show();
+	void OnWidgetCalledFromParent();
 
 protected:
 	virtual void _OnCreate();
 	virtual void _OnShow();
+	virtual void _OnWidgetCalledFromParent();
 };

@@ -36,6 +36,16 @@ void UUI_Base::_OnShow()
 	UE_LOG(LogTemp, Warning, TEXT("UI Add to ViewPort"));
 }
 
+void UUI_Base::_OnWidgetCalledFromParent()
+{
+}
+
 void UUI_Base::Show()
 {
+	_OnShow();
+}
+
+void UUI_Base::OnWidgetCalledFromParent()
+{
+	_OnWidgetCalledFromParent();
 }

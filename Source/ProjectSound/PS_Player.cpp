@@ -33,6 +33,7 @@ APS_Player::APS_Player()
 	AudioComponent->bAutoActivate = true;
 	AudioComponent->bAlwaysPlay = true;
 
+
 }
 
 void APS_Player::VoiceCaptureTick()
@@ -49,6 +50,10 @@ void APS_Player::PlayVoiceCapture()
 void APS_Player::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	
+
 
 	GetUIManager()->Show<UUI_Start>();
 	//GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
@@ -127,7 +132,12 @@ void APS_Player::ActivateVoiceCapture()
 		UE_LOG(LogTemp, Warning, TEXT("Cannot Detect Audio Device."));
 		return;
 	}
-		
+	if (bIsAudioCaptureActivated == false)
+	{
+		bIsAudioCaptureActivated = true;
+	}
+	
+
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	UAudioMixerBlueprintLibrary::StartRecordingOutput(this, 5.f, NewSubmix);
@@ -144,7 +154,10 @@ void APS_Player::DeActivateVoiceCapture()
 		UE_LOG(LogTemp, Warning, TEXT("Cannot Detect Audio Device."));
 		return;
 	}
-		
+	if (bIsAudioCaptureActivated == true)
+	{
+		bIsAudioCaptureActivated = false ;
+	}
 	// Create Submix & Recording Settings
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
@@ -189,22 +202,16 @@ void APS_Player::DeActivateVoiceCapture()
 	else
 		UE_LOG(LogTemp,Warning, TEXT("Failed To Add Chain Entry"));
 
-
-
 //	PlayAudio();
 
 }
 
 void APS_Player::PlayAudio()
 {
-	if (AudioComponent == nullptr)
-		return;
-
-	//AudioComponent->SetPitchMultiplier(PitchCoefficient);
-
-	AudioComponent->Play();
-
-
+	if (_CheckSoundAppliedToAudioComponent())
+	{
+		AudioComponent->Play();
+	}
 }
 
 float APS_Player::ConvertDesiredFrequencyToPitch(const float _Frequency)
@@ -212,5 +219,31 @@ float APS_Player::ConvertDesiredFrequencyToPitch(const float _Frequency)
 	return FMath::Log2(_Frequency);
 }
 
+void APS_Player::SetPitchMultiplier(float value)
+{
+	AudioComponent->SetPitchMultiplier(value);
+}
+
+void APS_Player::SetVolumeMultiplier(float value)
+{
+	AudioComponent->SetVolumeMultiplier(value);
+}
+
+bool APS_Player::_CheckSoundAppliedToAudioComponent()
+{
+	if (AudioComponent == nullptr)
+	{
+		 return false;
+	}
+	if (AudioComponent->Sound == nullptr)
+	{
+		return false;
+	}
+	return true;
+}
 
 
+bool APS_Player::GetAudioCaptureState()
+{
+	return bIsAudioCaptureActivated;
+}

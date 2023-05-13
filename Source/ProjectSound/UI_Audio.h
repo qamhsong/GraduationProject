@@ -13,6 +13,7 @@
  class USlider;
  class UEditableText;
  class UPSButton;
+ class APS_Player;
 
 UCLASS(BlueprintType, Blueprintable)
 class PROJECTSOUND_API UUI_Audio : public UUI_Base
@@ -29,8 +30,13 @@ public:
 protected:
 	virtual void _OnCreate();
 	virtual void _OnShow();
+	virtual void _OnWidgetCalledFromParent();
 
 public:
+
+	UPROPERTY()
+	APS_Player* playerPawn;
+
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* OptionPitch;
 
@@ -53,10 +59,10 @@ public:
 	float _Value;
 
 	UPROPERTY()
-	float _MinValue;
+	float _MinValue = 0.f;
 
 	UPROPERTY()
-	float _MaxValue;
+	float _MaxValue = 100.f;
 
 public:
 	void SetSliderValue(FString optionKey, float currentValue, float minValue = 0.f, float maxValue = 5.0f);

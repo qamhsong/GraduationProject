@@ -4,6 +4,7 @@
 #include "UI_Start.h"
 #include "UIManager.h"
 #include "UI_Audio.h"
+#include "UI_AudioOption.h"
 #include "PSButton.h"
 
 void UUI_Start::_OnCreate()
@@ -11,6 +12,7 @@ void UUI_Start::_OnCreate()
 	Super::_OnCreate();
 
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_Start, &UUI_Start::_OnClickStart);
+	UE_LOG(LogTemp, Warning, TEXT("UI_start "));
 
 }
 
@@ -24,7 +26,7 @@ void UUI_Start::_OnShow()
 void UUI_Start::_OnClickStart(UPSButton* sender)
 {
 	this->SetVisibility(ESlateVisibility::Collapsed);
-	GetUIManager()->Show<UUI_Audio>();
+	GetUIManager()->Show<UUI_AudioOption>();
 	UE_LOG(LogTemp, Warning, TEXT("UI_Audio activate"));
 }
 

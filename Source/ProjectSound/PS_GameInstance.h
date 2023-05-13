@@ -19,7 +19,7 @@ class PROJECTSOUND_API UPS_GameInstance : public UGameInstance
 	virtual void BeginDestroy() override;
 
 	TWeakObjectPtr<UUIManager> UIManager;
-
+	
 	
 private:
 	static TWeakObjectPtr<UPS_GameInstance> MyGameInstance;

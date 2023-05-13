@@ -108,6 +108,9 @@ public:
 	
 	bool bIsPlaying;
 
+	UPROPERTY()
+	bool bIsAudioCaptureActivated;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float StereoDelayTime = 2000.f;
@@ -158,4 +161,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float ConvertDesiredFrequencyToPitch(const float _Frequency);
 
+	UFUNCTION()
+	void SetPitchMultiplier(float value);
+
+	UFUNCTION()
+	void SetVolumeMultiplier(float value);
+
+	UFUNCTION()
+	bool _CheckSoundAppliedToAudioComponent();
+
+	UFUNCTION()
+	bool GetAudioCaptureState();
 };

@@ -7,6 +7,10 @@
 #include "Components/Slider.h"
 #include "Components/EditableText.h"
 #include "Components/TextBlock.h"
+#include "PS_Player.h"
+#include "Kismet/GameplayStatics.h"
+#include "PS_GameInstance.h"
+#include "PS_Singleton.h"
 
 void UUI_Audio::_OnCreate()
 {
@@ -24,6 +28,27 @@ void UUI_Audio::_OnShow()
 	Super::_OnShow();
 	this->AddToViewport();
 	GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
+}
+
+void UUI_Audio::_OnWidgetCalledFromParent()
+{
+	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, pitchBtnMinus, &UUI_Audio::_OnClickMinus);
+	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, pitchBtnPlus, &UUI_Audio::_OnClickPlus);
+
+	PitchValue->OnValueChanged.AddDynamic(this, &UUI_Audio::_OnSliderValueChange);
+	PitchTxtValue->OnTextCommitted.AddDynamic(this, &UUI_Audio::_OnTxtChangeCommit);
+	UPS_GameInstance* gInst = UPS_GameInstance::GetMyInstance();
+	if (gInst == nullptr)
+	{
+		return;
+	}
+	UWorld* world = gInst->GetWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+	playerPawn = Cast<APS_Player>(UGameplayStatics::GetPlayerPawn(world, 0));
+
 }
 
 void UUI_Audio::SetSliderValue(FString optionKey, float currentValue, float minValue, float maxValue)
@@ -49,6 +74,7 @@ void UUI_Audio::_OnSliderValueChange(float sliderValue)
 	PitchTxtValue->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _Value)));
 
 	_CheckValue(_Value);
+	playerPawn->SetPitchMultiplier(_Value);
 	OnOptionSlider.Broadcast(_optionKey, _Value);
 }
 
@@ -65,16 +91,18 @@ void UUI_Audio::_OnTxtChangeCommit(const FText& txtValue, ETextCommit::Type comm
 	PitchValue->SetValue(_Value);
 	
 	_CheckValue(_Value);
+	playerPawn->SetPitchMultiplier(_Value);
 	OnOptionSlider.Broadcast(_optionKey, _Value);
 }
 
 void UUI_Audio::_OnClickMinus(UPSButton* sender)
 {
-	_Value = .5f;
+	_Value -= .5f;
 	PitchValue->SetValue(_Value);
 	PitchTxtValue->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _Value)));
 
 	_CheckValue(_Value);
+	playerPawn->SetPitchMultiplier(_Value);
 	OnOptionSlider.Broadcast(_optionKey, _Value);
 }
 
@@ -85,6 +113,7 @@ void UUI_Audio::_OnClickPlus(UPSButton* sender)
 	PitchTxtValue->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _Value)));
 
 	_CheckValue(_Value);
+	playerPawn->SetPitchMultiplier(_Value);
 	OnOptionSlider.Broadcast(_optionKey, _Value);
 }
 

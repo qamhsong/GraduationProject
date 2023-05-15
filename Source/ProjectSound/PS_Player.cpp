@@ -10,9 +10,11 @@
 #include "UIManager.h"
 #include "UI_Start.h"
 #include "PS_PlayerController.h"
-//#include "AudioAnalyzerManager.h"
 #include "Sound/SoundEffectSource.h"
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectStereoDelay.h>
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectEQ.h>
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectBitCrusher.h>
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectFilter.h>
 
 
 // Sets default values
@@ -32,9 +34,9 @@ APS_Player::APS_Player()
 	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->bAutoActivate = true;
 	AudioComponent->bAlwaysPlay = true;
-
-
 }
+
+
 
 void APS_Player::VoiceCaptureTick()
 {
@@ -51,13 +53,14 @@ void APS_Player::BeginPlay()
 {
 	Super::BeginPlay();
 
+	_CreateSourceChain();
+	_CreateAllPreset();
 
-	
-
-
+	// 시작 UI 호출
 	GetUIManager()->Show<UUI_Start>();
 	//GetUIManager()->ApplyInputMode(EUIInputMode::GameAndUI);
 
+	// Player Controller 검증 및 Audio Device 정보 획득
 	UPS_GameInstance* gInst = GInst();
 	if (gInst == nullptr)
 	{
@@ -78,7 +81,7 @@ void APS_Player::BeginPlay()
 	FrequenciesToGet.Add(100.f);
 	FrequenciesToGet.Add(500.f);
 	FrequenciesToGet.Add(1000.f);
-	//FrequenciesToGet.Add(3000.f);
+	FrequenciesToGet.Add(3000.f);
 	FrequenciesToGet.Add(5000.f);
 
 
@@ -94,6 +97,7 @@ void APS_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 비실시간 Fast Fourier Transform 데이터 획득 여부 확인 코드
 	if (AudioComponent->IsPlaying())
 	{
 		if(FrequenciesToGet.Num() <= 0)
@@ -123,8 +127,11 @@ void APS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+
+
 void APS_Player::ActivateVoiceCapture()
 {
+	// 마이크 오디오 캡쳐 기능 활성화
 	AudioCapture->Activate();
 	
 	if (!AudioDevice)
@@ -137,7 +144,7 @@ void APS_Player::ActivateVoiceCapture()
 		bIsAudioCaptureActivated = true;
 	}
 	
-
+	// 오디오 녹화 시작 기능
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	UAudioMixerBlueprintLibrary::StartRecordingOutput(this, 5.f, NewSubmix);
@@ -147,6 +154,7 @@ void APS_Player::ActivateVoiceCapture()
 
 void APS_Player::DeActivateVoiceCapture()
 {
+	// 오디오 캡쳐 기능 비활성화
 	AudioCapture->Deactivate(); 
 
 	if (!AudioDevice)
@@ -158,13 +166,15 @@ void APS_Player::DeActivateVoiceCapture()
 	{
 		bIsAudioCaptureActivated = false ;
 	}
+
+
 	// Create Submix & Recording Settings
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	USoundWave* ExistingSoundWaveToOverWrite = nullptr;
 	USoundWave* soundtest = UAudioMixerBlueprintLibrary::StopRecordingOutput(this, EAudioRecordingExportType::SoundWave, FString("soundtest"), FString(""), NewSubmix, ExistingSoundWaveToOverWrite);
 
-	//Fast Fourier Transform setting
+	// Fast Fourier Transform setting
 	soundtest->bEnableBakedFFTAnalysis = true;
 	soundtest->FFTSize = ESoundWaveFFTSize::VeryLarge_2048;
 	soundtest->FFTAnalysisFrameSize = 4096;
@@ -172,35 +182,35 @@ void APS_Player::DeActivateVoiceCapture()
 	//Adjust Pitch by converting Frequency data
 	//soundtest->Pitch = ConvertDesiredFrequencyToPitch(FrequencyMultiplier[DesiredKeyNumber]);
 	
+	// 녹화하여 생성된 오디오 파일 검증 및 오디오 컴포넌트에 등록
 	if (soundtest->IsValidLowLevelFast())
 	{
 		AudioComponent->SetSound(soundtest);
 		UE_LOG(LogTemp, Warning, TEXT("Sound Set to AudioComponent"));
 	}
 
-	SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
+	//SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
 
-	StereoDelaySettings.DelayMode = DelayMode;
-	StereoDelaySettings.DelayTimeMsec = StereoDelayTime;
-	StereoDelaySettings.bFilterEnabled = bEnableFilter;
-	StereoDelaySettings.FilterType = FilterType;
-	StereoDelaySettings.FilterFrequency = CutoffFilterFrequency;
-	StereoDelaySettings.FilterQ = FilterQualityFactor;
+	//StereoDelaySettings.DelayMode = DelayMode;
+	//StereoDelaySettings.DelayTimeMsec = StereoDelayTime;
+	//StereoDelaySettings.bFilterEnabled = bEnableFilter;
+	//StereoDelaySettings.FilterType = FilterType;
+	//StereoDelaySettings.FilterFrequency = CutoffFilterFrequency;
+	//StereoDelaySettings.FilterQ = FilterQualityFactor;
 
-	DelayPreset = NewObject<USourceEffectStereoDelayPreset>(USourceEffectStereoDelayPreset::StaticClass());
+	//DelayPreset = NewObject<USourceEffectStereoDelayPreset>(USourceEffectStereoDelayPreset::StaticClass());
 
 
-	DelayPreset->SetSettings(StereoDelaySettings);
-	FSourceEffectChainEntry ChainEntry;
-	ChainEntry.bBypass = true;
-	ChainEntry.Preset = DelayPreset;
-	
-
-	SourceChain->Chain.Emplace(ChainEntry);
-	if(SourceChain->Chain.Num() > 0)
-		AudioComponent->SetSourceEffectChain(SourceChain);
-	else
-		UE_LOG(LogTemp,Warning, TEXT("Failed To Add Chain Entry"));
+	//DelayPreset->SetSettings(StereoDelaySettings);
+	//FSourceEffectChainEntry ChainEntry;
+	//ChainEntry.bBypass = true;
+	//ChainEntry.Preset = DelayPreset;
+	//
+	//SourceChain->Chain.Emplace(ChainEntry);
+	//if(SourceChain->Chain.Num() > 0)
+	//	AudioComponent->SetSourceEffectChain(SourceChain);
+	//else
+	//	UE_LOG(LogTemp,Warning, TEXT("Failed To Add Chain Entry"));
 
 //	PlayAudio();
 
@@ -213,6 +223,117 @@ void APS_Player::PlayAudio()
 		AudioComponent->Play();
 	}
 }
+
+bool APS_Player::_CreateAllPreset()
+{
+	EQPreset = NewObject<USourceEffectEQPreset>(USourceEffectEQPreset::StaticClass());
+	FSourceEffectEQSettings eqSettings;
+	
+	DelayPreset = NewObject<USourceEffectStereoDelayPreset>(USourceEffectStereoDelayPreset::StaticClass());
+	FSourceEffectStereoDelaySettings steredelaySettings;
+
+	BitCrusherPreset = NewObject<USourceEffectBitCrusherPreset>(USourceEffectBitCrusherPreset::StaticClass());
+	FSourceEffectBitCrusherSettings bitcrusherSettings;
+	
+	FilterPreset = NewObject<USourceEffectFilterPreset>(USourceEffectFilterPreset::StaticClass());
+	FSourceEffectFilterSettings filterSettings;
+
+	EffectPresets.Emplace(EQPreset);
+	EffectPresets.Emplace(DelayPreset);
+	EffectPresets.Emplace(BitCrusherPreset);
+	EffectPresets.Emplace(FilterPreset);
+		
+	return true;
+}
+
+void APS_Player::_EQBandSettings(const float& _frequency, const float& _bandwidth, const float& _gaindb)
+{
+
+}
+
+void APS_Player::_LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
+{
+	FSourceEffectFilterSettings filterSettings;
+	filterSettings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
+	filterSettings.FilterType = ESourceEffectFilterType::LowPass;
+	filterSettings.CutoffFrequency = _cutofffrequency;
+	filterSettings.FilterQ = _qfilter;
+
+	FilterPreset->SetSettings(filterSettings);
+}
+
+void APS_Player::_HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
+{
+	FSourceEffectFilterSettings filterSettings;
+	filterSettings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
+	filterSettings.FilterType = ESourceEffectFilterType::HighPass;
+	filterSettings.CutoffFrequency = _cutofffrequency;
+	filterSettings.FilterQ = _qfilter;
+
+	FilterPreset->SetSettings(filterSettings);
+}
+
+void APS_Player::BitcrusherSettings(const float& _samplerate, const float& _bitdepth)
+{
+	FSourceEffectBitCrusherBaseSettings bitcrushSettings;
+	bitcrushSettings.SampleRate = _samplerate;
+	bitcrushSettings.BitDepth = _bitdepth;
+
+	BitCrusherPreset->SetSettings(bitcrushSettings);
+}
+
+bool APS_Player::_CreateSourceChain()
+{
+	SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
+
+	if (SourceChain == nullptr)
+	{
+		return false;
+	}
+	return true;
+}
+
+void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
+{
+	FSourceEffectChainEntry chainEntry;
+	chainEntry.bBypass = true;
+	switch (effectPreset)
+	{
+	case EEffectPreset::EFilter:
+		chainEntry.Preset = FilterPreset;
+		break;
+	case EEffectPreset::EEQ:
+		chainEntry.Preset = EQPreset;
+		break;
+	case EEffectPreset::EBitCrusher:
+		chainEntry.Preset = BitCrusherPreset;
+		UE_LOG(LogTemp,Warning , TEXT("BitCrusher Applied"));
+		break;
+	case EEffectPreset::EStereoDelay:
+		chainEntry.Preset = DelayPreset;
+		break;
+	default:
+		chainEntry.Preset = nullptr;
+		break;
+	}
+	
+	if(chainEntry.Preset == nullptr)
+		return;
+	if(SourceChain == nullptr || AudioComponent == nullptr)
+		return;
+
+
+	SourceChain->Chain.Emplace(chainEntry);
+	if (SourceChain->Chain.Num() > 0)
+	{
+		AudioComponent->SetSourceEffectChain(SourceChain);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed To Add Chain Entry"));
+	}
+}
+
 
 float APS_Player::ConvertDesiredFrequencyToPitch(const float _Frequency)
 {

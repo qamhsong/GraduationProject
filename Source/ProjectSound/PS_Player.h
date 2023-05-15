@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "SourceEffects/SourceEffectStereoDelay.h"
-#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectStereoDelay.h>
 #include "PS_Player.generated.h"
 
 class UAudioCaptureComponent;
@@ -13,6 +12,19 @@ class USoundSubmix;
 class USoundWaveProcedural;
 class APS_PlayerController;
 class USoundEffectSourcePresetChain;
+class USourceEffectEQPreset;
+class USourceEffectBitCrusherPreset;
+class USourceEffectFilterPreset;
+
+
+UENUM()
+enum class EEffectPreset : uint8
+{
+	EFilter = 0,
+	EEQ,
+	EBitCrusher,
+	EStereoDelay,
+};
 
 UCLASS()
 class PROJECTSOUND_API APS_Player : public APawn
@@ -43,9 +55,41 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USourceEffectStereoDelayPreset* DelayPreset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FSourceEffectStereoDelaySettings StereoDelaySettings;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectEQPreset* EQPreset;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectBitCrusherPreset* BitCrusherPreset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectFilterPreset* FilterPreset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<USoundEffectSourcePreset*> EffectPresets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<USoundEffectSourcePreset*> AppliedEffects;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EEffectPreset PresetToApply;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//FSourceEffectEQSettings EffectEQSettings;
+	// 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//FSourceEffectStereoDelaySettings StereoDelaySettings;
+
+	UFUNCTION()
+	void _EQBandSettings(const float& _frequency, const float& _bandwidth, const float& _gaindb);
+
+	UFUNCTION()
+	void _LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
+
+	UFUNCTION()
+	void _HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
+
+	UFUNCTION()
+	void BitcrusherSettings(const float& _samplerate, const float& _bitdepth);
 
 	UPROPERTY()
 	float VoiceCaptureVolume;
@@ -156,6 +200,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayAudio();
 
+	UFUNCTION()
+	bool _CreateAllPreset();
+
+	UFUNCTION()
+	bool _CreateSourceChain();
+
+	UFUNCTION()
+	void RegisterSourceChainEffect(EEffectPreset effectPreset);
+
+
 	// convert Frequency value to pitch value.
 	// Frequency & Pitch has an exponential relationship
 	UFUNCTION(BlueprintCallable)
@@ -166,6 +220,8 @@ public:
 
 	UFUNCTION()
 	void SetVolumeMultiplier(float value);
+
+
 
 	UFUNCTION()
 	bool _CheckSoundAppliedToAudioComponent();

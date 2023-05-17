@@ -93,14 +93,19 @@ public:
 
 	UPROPERTY()
 	float VoiceCaptureVolume;
+
 	UPROPERTY()
 	bool PlayVoiceCaptureFlag;
+
 	UPROPERTY()
 	FTimerHandle VoiceCaptureTickTimer;
+
 	UPROPERTY()
 	FTimerHandle PlayVoiceCaptureTimer;
+
 	UPROPERTY()
 	USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
+
 	UPROPERTY()
 	TArray<uint8> VoiceCaptureBuffer;
 
@@ -108,10 +113,6 @@ public:
 
 	float VoiceCaptureTime = 0;
 
-	UFUNCTION(BlueprintCallable)
-void VoiceCaptureTick();
-	UFUNCTION(BlueprintCallable)
-	void PlayVoiceCapture();
 
 
 
@@ -150,10 +151,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 DesiredKeyNumber = 5;
 	
-	bool bIsPlaying;
+	UPROPERTY()
+	bool bIsPlaying = false;
 
 	UPROPERTY()
-	bool bIsAudioCaptureActivated;
+	bool bIsRecording = false;
+
+	UPROPERTY()
+	bool bIsAudioCaptureActivated = false;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -197,6 +202,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DeActivateVoiceCapture();
 
+	UFUNCTION()
+	void ActivateRealTimeVoiceCapture();
+
+	UFUNCTION()
+	void DeActivateRealTimeVoiceCapture();
+
 	UFUNCTION(BlueprintCallable)
 	void PlayAudio();
 
@@ -222,10 +233,12 @@ public:
 	void SetVolumeMultiplier(float value);
 
 
-
 	UFUNCTION()
-	bool _CheckSoundAppliedToAudioComponent();
+	bool CheckSoundAppliedToAudioComponent();
 
 	UFUNCTION()
 	bool GetAudioCaptureState();
+
+	UFUNCTION()
+	bool GetRecordingState();
 };

@@ -34,19 +34,10 @@ APS_Player::APS_Player()
 	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->bAutoActivate = true;
 	AudioComponent->bAlwaysPlay = true;
-}
-
-
-
-void APS_Player::VoiceCaptureTick()
-{
 
 }
 
-void APS_Player::PlayVoiceCapture()
-{
 
-}
 
 // Called when the game starts or when spawned
 void APS_Player::BeginPlay()
@@ -78,11 +69,11 @@ void APS_Player::BeginPlay()
 	if(AudioDevice == nullptr)
 		UE_LOG(LogTemp, Warning, TEXT("Cannot Detect Audio Device."));
 
-	FrequenciesToGet.Add(100.f);
-	FrequenciesToGet.Add(500.f);
-	FrequenciesToGet.Add(1000.f);
-	FrequenciesToGet.Add(3000.f);
-	FrequenciesToGet.Add(5000.f);
+	//FrequenciesToGet.Add(100.f);
+	//FrequenciesToGet.Add(500.f);
+	//FrequenciesToGet.Add(1000.f);
+	//FrequenciesToGet.Add(3000.f);
+	//FrequenciesToGet.Add(5000.f);
 
 
 	for (int32 i = 1; i <= 12; i++)
@@ -124,7 +115,6 @@ void APS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	PlayerInputComponent->BindAction("ActivateVC", IE_Pressed, this, &APS_Player::ActivateVoiceCapture);
 	PlayerInputComponent->BindAction("DeActivateVC", IE_Pressed, this, &APS_Player::DeActivateVoiceCapture);
 	PlayerInputComponent->BindAction("PlayAudio", IE_Pressed, this, &APS_Player::PlayAudio);
-
 }
 
 
@@ -148,7 +138,7 @@ void APS_Player::ActivateVoiceCapture()
 	UAudioSettings* AudioSettings = GetMutableDefault<UAudioSettings>();
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	UAudioMixerBlueprintLibrary::StartRecordingOutput(this, 5.f, NewSubmix);
-	
+	bIsRecording = true;
 	
 }
 
@@ -173,6 +163,7 @@ void APS_Player::DeActivateVoiceCapture()
 	USoundSubmix* NewSubmix = Cast<USoundSubmix>(AudioSettings->MasterSubmix.TryLoad());
 	USoundWave* ExistingSoundWaveToOverWrite = nullptr;
 	USoundWave* soundtest = UAudioMixerBlueprintLibrary::StopRecordingOutput(this, EAudioRecordingExportType::SoundWave, FString("soundtest"), FString(""), NewSubmix, ExistingSoundWaveToOverWrite);
+	bIsRecording = false;
 
 	// Fast Fourier Transform setting
 	soundtest->bEnableBakedFFTAnalysis = true;
@@ -188,37 +179,23 @@ void APS_Player::DeActivateVoiceCapture()
 		AudioComponent->SetSound(soundtest);
 		UE_LOG(LogTemp, Warning, TEXT("Sound Set to AudioComponent"));
 	}
+}
 
-	//SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
+void APS_Player::ActivateRealTimeVoiceCapture()
+{
+	AudioCapture->Activate();
+	bIsAudioCaptureActivated = true;
+}
 
-	//StereoDelaySettings.DelayMode = DelayMode;
-	//StereoDelaySettings.DelayTimeMsec = StereoDelayTime;
-	//StereoDelaySettings.bFilterEnabled = bEnableFilter;
-	//StereoDelaySettings.FilterType = FilterType;
-	//StereoDelaySettings.FilterFrequency = CutoffFilterFrequency;
-	//StereoDelaySettings.FilterQ = FilterQualityFactor;
-
-	//DelayPreset = NewObject<USourceEffectStereoDelayPreset>(USourceEffectStereoDelayPreset::StaticClass());
-
-
-	//DelayPreset->SetSettings(StereoDelaySettings);
-	//FSourceEffectChainEntry ChainEntry;
-	//ChainEntry.bBypass = true;
-	//ChainEntry.Preset = DelayPreset;
-	//
-	//SourceChain->Chain.Emplace(ChainEntry);
-	//if(SourceChain->Chain.Num() > 0)
-	//	AudioComponent->SetSourceEffectChain(SourceChain);
-	//else
-	//	UE_LOG(LogTemp,Warning, TEXT("Failed To Add Chain Entry"));
-
-//	PlayAudio();
-
+void APS_Player::DeActivateRealTimeVoiceCapture()
+{
+	 AudioCapture->Deactivate();
+	 bIsAudioCaptureActivated  = false;
 }
 
 void APS_Player::PlayAudio()
 {
-	if (_CheckSoundAppliedToAudioComponent())
+	if (CheckSoundAppliedToAudioComponent())
 	{
 		AudioComponent->Play();
 	}
@@ -248,7 +225,7 @@ bool APS_Player::_CreateAllPreset()
 
 void APS_Player::_EQBandSettings(const float& _frequency, const float& _bandwidth, const float& _gaindb)
 {
-
+	
 }
 
 void APS_Player::_LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
@@ -350,7 +327,7 @@ void APS_Player::SetVolumeMultiplier(float value)
 	AudioComponent->SetVolumeMultiplier(value);
 }
 
-bool APS_Player::_CheckSoundAppliedToAudioComponent()
+bool APS_Player::CheckSoundAppliedToAudioComponent()
 {
 	if (AudioComponent == nullptr)
 	{
@@ -367,4 +344,9 @@ bool APS_Player::_CheckSoundAppliedToAudioComponent()
 bool APS_Player::GetAudioCaptureState()
 {
 	return bIsAudioCaptureActivated;
+}
+
+bool APS_Player::GetRecordingState()
+{
+	return bIsRecording;
 }

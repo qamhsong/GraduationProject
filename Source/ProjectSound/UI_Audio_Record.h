@@ -24,14 +24,21 @@ protected:
 	virtual void _OnWidgetCalledFromParent();
 
 public:
+
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* txt_option_audiocapture;
+
+	UPROPERTY(meta = (BindWidget))
+	UPSButton* btn_audiocapture_realtime;
 
 	UPROPERTY(meta = (BindWidget))
 	UPSButton* btn_audiocapture_On;
 
 	UPROPERTY(meta = (BindWidget))
-	UPSButton* btn_audiocapture_Off;
+	UTextBlock* txt_audiocapture_state;
+
+	//UPROPERTY(meta = (BindWidget))
+	//UPSButton* btn_audiocapture_Off;
 
 	UPROPERTY(meta = (BindWidget))
 	UPSButton* btn_playcapturedaudio;
@@ -41,6 +48,9 @@ public:
 
 public:
 	
+	UFUNCTION()
+	 void _OnClickAudioCaptureRealTime(UPSButton* sender);
+
 	UFUNCTION()
 	void _OnClickAudioCaptureOn(UPSButton* sender);
 

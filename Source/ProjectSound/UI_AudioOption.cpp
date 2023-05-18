@@ -25,7 +25,7 @@ void UUI_AudioOption::_OnShow()
 		if (UUI_Base* castWidget = Cast<UUI_Base>(widget))
 		{
 			castWidget->OnWidgetCalledFromParent();
-			UE_LOG(LogTemp, Warning, TEXT("_OnShow UI_Audio_Base"));
+			UE_LOG(LogTemp, Warning, TEXT("show vertical box children"));
 		 }
 	}
  

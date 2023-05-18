@@ -82,8 +82,8 @@ public:
 	UFUNCTION()
 	void _EQBandSettings(const float& _frequency, const float& _bandwidth, const float& _gaindb);
 
-	UFUNCTION()
-	void _LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
+	UFUNCTION(BlueprintCallable)
+	void LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
 
 	UFUNCTION()
 	void _HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
@@ -119,6 +119,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 
@@ -217,9 +219,11 @@ public:
 	UFUNCTION()
 	bool _CreateSourceChain();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void RegisterSourceChainEffect(EEffectPreset effectPreset);
 
+	UFUNCTION()
+	void RemoveSourceChainEffect(EEffectPreset effectPreset);
 
 	// convert Frequency value to pitch value.
 	// Frequency & Pitch has an exponential relationship

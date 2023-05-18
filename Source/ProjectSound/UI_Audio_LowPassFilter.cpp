@@ -17,7 +17,7 @@ void UUI_Audio_LowPassFilter::_OnCreate()
 	Super::_OnCreate();
 
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_lowpassfilter_apply, &UUI_Audio_LowPassFilter::_OnApplyLowPassFilter);
-	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_lowpassfilter_remove, &UUI_Audio_LowPassFilter::_OnRemoveLowPassFilter);
+	//SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_lowpassfilter_remove, &UUI_Audio_LowPassFilter::_OnRemoveLowPassFilter);
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_cutfrequency_minus, &UUI_Audio_LowPassFilter::_OnCutFrequencyClickMinus);
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_cutfrequency_plus, &UUI_Audio_LowPassFilter::_OnCutFrequencyClickPlus);
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_qfilter_minus, &UUI_Audio_LowPassFilter::_OnQFilterClickMinus);
@@ -37,7 +37,8 @@ void UUI_Audio_LowPassFilter::_OnShow()
 
 void UUI_Audio_LowPassFilter::_OnWidgetCalledFromParent()
 {
-	//SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_lowpassfilter_apply, &UUI_Audio_LowPassFilter::_OnApplyLowPassFilter);
+	UE_LOG(LogTemp, Warning, TEXT("LowpassFilter Binding Success"));
+	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_lowpassfilter_apply, &UUI_Audio_LowPassFilter::_OnApplyLowPassFilter);
 	//SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_lowpassfilter_remove, &UUI_Audio_LowPassFilter::_OnRemoveLowPassFilter);
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_cutfrequency_minus, &UUI_Audio_LowPassFilter::_OnCutFrequencyClickMinus);
 	SAFE_BIND_DELEGATE_LEFT_CLICKED(this, btn_cutfrequency_plus, &UUI_Audio_LowPassFilter::_OnCutFrequencyClickPlus);
@@ -58,6 +59,9 @@ void UUI_Audio_LowPassFilter::_OnWidgetCalledFromParent()
 		return;
 	}
 	playerPawn = Cast<APS_Player>(UGameplayStatics::GetPlayerPawn(world, 0));
+
+	_CutFreqValue = 800.f;
+	_QFilterValue = 10.f;
 }
 
 void UUI_Audio_LowPassFilter::SetCutFrequencySliderValue(FString optionKey, float currentValue, float minValue, float maxValue)
@@ -71,8 +75,8 @@ void UUI_Audio_LowPassFilter::SetCutFrequencySliderValue(FString optionKey, floa
 	slider_cutfrequency->SetValue(_CutFreqValue);
 
 	_CheckCutFrequencyValue(_CutFreqValue);
-	edtxt_cutfreqency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
-	// 플레이어폰에서 호출
+	edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
 
 }
 
@@ -88,50 +92,133 @@ void UUI_Audio_LowPassFilter::SetQFilterSliderValue(FString optionKey, float cur
 
 	_CheckQFilterValue(_QFilterValue);
 	edtxt_qfilter->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _QFilterValue)));
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
 }
 
 
 void UUI_Audio_LowPassFilter::_OnApplyLowPassFilter(UPSButton* sender)
 {
-
+	if (playerPawn == nullptr)
+	{
+		return;
+	}
+	if (_bLowPassFilterApplyState == true)
+	{
+		playerPawn->RemoveSourceChainEffect(EEffectPreset::EFilter);
+		txt_lowpassfilter_state->SetText(FText::FromString(FString("APPLY")));
+		UE_LOG(LogTemp, Warning, TEXT("LowPassFilter Removed"));
+		_bLowPassFilterApplyState = false;
+	}
+	else
+	{
+		playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
+		playerPawn->RegisterSourceChainEffect(EEffectPreset::EFilter);
+		txt_lowpassfilter_state->SetText(FText::FromString(FString("REMOVE")));
+		UE_LOG(LogTemp, Warning, TEXT("LowPassFilter Applied"));
+		_bLowPassFilterApplyState = true;
+	}
+	
 }
 
 void UUI_Audio_LowPassFilter::_OnRemoveLowPassFilter(UPSButton* sender)
 {
-
+	
 }
 
 void UUI_Audio_LowPassFilter::_OnCutFrequencySliderValueChange(float sliderValue)
 {
+	_CutFreqValue = sliderValue;
+	slider_cutfrequency->SetValue(_CutFreqValue);
+	edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+
+	_CheckCutFrequencyValue(_CutFreqValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
+
 }
 
 void UUI_Audio_LowPassFilter::_OnCutFrequencyTxtChangeCommit(const FText& txtValue, ETextCommit::Type commitType)
 {
+	if (commitType != ETextCommit::OnEnter)
+	{
+		return;
+	}
+	 
+	 FString txt = txtValue.ToString();
+	 _CutFreqValue = FCString::Atof(*txt.TrimQuotes());
+
+	 slider_cutfrequency->SetValue(_CutFreqValue);
+
+	 _CheckCutFrequencyValue(_CutFreqValue);
+	 playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
+
 }
 
 void UUI_Audio_LowPassFilter::_OnCutFrequencyClickMinus(UPSButton* sender)
 {
+	_CutFreqValue -= .5f;
+	slider_cutfrequency->SetValue(_CutFreqValue);
+	edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+
+	_CheckCutFrequencyValue(_CutFreqValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
+
 }
 
 void UUI_Audio_LowPassFilter::_OnCutFrequencyClickPlus(UPSButton* sender)
 {
+	_CutFreqValue += .5f;
+	slider_cutfrequency->SetValue(_CutFreqValue);
+	edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+
+	_CheckCutFrequencyValue(_CutFreqValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
+
 }
 
 void UUI_Audio_LowPassFilter::_OnQFilterSliderValueChange(float sliderValue)
 {
+	_QFilterValue = sliderValue;
+	slider_qfilter->SetValue(_QFilterValue);
+	edtxt_qfilter->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _QFilterValue)));
+
+	_CheckQFilterValue(_QFilterValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
 }
 
 void UUI_Audio_LowPassFilter::_OnQFilterTxtChangeCommit(const FText& txtValue, ETextCommit::Type commitType)
 {
+	if (commitType != ETextCommit::OnEnter)
+	{
+		return;
+	}
+
+	FString txt = txtValue.ToString();
+	_QFilterValue = FCString::Atof(*txt.TrimQuotes());
+
+	slider_qfilter->SetValue(_QFilterValue);
+
+	_CheckQFilterValue(_QFilterValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
 }
 
 void UUI_Audio_LowPassFilter::_OnQFilterClickMinus(UPSButton* sender)
 {
+	_QFilterValue -= .5f;
+	slider_qfilter->SetValue(_CutFreqValue);
+	edtxt_qfilter->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _QFilterValue)));
+
+	_CheckQFilterValue(_QFilterValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
 }
 
 void UUI_Audio_LowPassFilter::_OnQFilterClickPlus(UPSButton* sender)
 {
+	_QFilterValue += .5f;
+	slider_qfilter->SetValue(_CutFreqValue);
+	edtxt_qfilter->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _QFilterValue)));
 
+	_CheckQFilterValue(_QFilterValue);
+	playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
 }
 
 void UUI_Audio_LowPassFilter::_CheckCutFrequencyValue(float value)
@@ -139,13 +226,13 @@ void UUI_Audio_LowPassFilter::_CheckCutFrequencyValue(float value)
 	if (_CutFreqValue <= _MinCutFreqValue)
 	{
 		_CutFreqValue = _MinCutFreqValue;
-		edtxt_cutfreqency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+		edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
 	}
 
 	if (_CutFreqValue >= _MaxCutFreqValue)
 	{
 		_CutFreqValue = _MaxCutFreqValue;
-		edtxt_cutfreqency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+		edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
 	}
 }
 

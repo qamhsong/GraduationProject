@@ -39,10 +39,20 @@ public:
 	UTextBlock* txt_lowpassfilter;
 
 	UPROPERTY(meta = (BindWidget))
-	UPSButton* btn_lowpassfilter_apply;
+	UTextBlock* txt_lowpassfilter_state;
 
 	UPROPERTY(meta = (BindWidget))
-	UPSButton* btn_lowpassfilter_remove;
+	UTextBlock* txt_cutfreq;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* txt_qfilter;
+
+
+	UPROPERTY(meta = (BindWidget))
+	UPSButton* btn_lowpassfilter_apply;
+
+	//UPROPERTY(meta = (BindWidget))
+	//UPSButton* btn_lowpassfilter_remove;
 
 	UPROPERTY(meta = (BindWidget))
 	UPSButton* btn_cutfrequency_minus;
@@ -54,7 +64,7 @@ public:
 	USlider* slider_cutfrequency;
 
 	UPROPERTY(meta = (BindWidget))
-	UEditableText* edtxt_cutfreqency;
+	UEditableText* edtxt_cutfrequency;
 
 	UPROPERTY(meta = (BindWidget))
 	UPSButton* btn_qfilter_minus;
@@ -86,6 +96,9 @@ public:
 
 	UPROPERTY()
 	float _MaxQFilterValue = 10.f;
+
+	UPROPERTY()
+	bool _bLowPassFilterApplyState = false;
 	
 public:
 

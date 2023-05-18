@@ -83,6 +83,21 @@ void APS_Player::BeginPlay()
 
 }
 
+void APS_Player::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (EffectPresets.Num() > 1)
+	{
+		for (auto presets : EffectPresets)
+		{
+			presets->ConditionalBeginDestroy();
+			presets = nullptr;
+		}
+	}
+	SourceChain->ConditionalBeginDestroy();
+
+
+}
+
 // Called every frame
 void APS_Player::Tick(float DeltaTime)
 {
@@ -228,35 +243,39 @@ void APS_Player::_EQBandSettings(const float& _frequency, const float& _bandwidt
 	
 }
 
-void APS_Player::_LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
+void APS_Player::LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
 {
-	FSourceEffectFilterSettings filterSettings;
-	filterSettings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
-	filterSettings.FilterType = ESourceEffectFilterType::LowPass;
-	filterSettings.CutoffFrequency = _cutofffrequency;
-	filterSettings.FilterQ = _qfilter;
+	//FSourceEffectFilterSettings filterSettings;
+	//filterSettings.FilterCircuit = ESourceEffectFilterCircuit::OnePole;
+	//filterSettings.FilterType = ESourceEffectFilterType::LowPass;
+	//filterSettings.CutoffFrequency = 500.f;
+	//filterSettings.FilterQ = .5f;
+	//TArray<FSourceEffectFilterAudioBusModulationSettings> audiobus;
+	//filterSettings.AudioBusModulation = audiobus;
 
-	FilterPreset->SetSettings(filterSettings);
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Debug %f"), filterSettings.CutoffFrequency));
+	FilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
+	FilterPreset->Settings.FilterType = ESourceEffectFilterType::LowPass;
+	FilterPreset->Settings.CutoffFrequency = _cutofffrequency;
+	FilterPreset->Settings.FilterQ = _qfilter;
+
+//	FilterPreset->SetSettings(filterSettings);
 }
 
 void APS_Player::_HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
 {
-	FSourceEffectFilterSettings filterSettings;
-	filterSettings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
-	filterSettings.FilterType = ESourceEffectFilterType::HighPass;
-	filterSettings.CutoffFrequency = _cutofffrequency;
-	filterSettings.FilterQ = _qfilter;
-
-	FilterPreset->SetSettings(filterSettings);
+	FilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
+	FilterPreset->Settings.FilterType = ESourceEffectFilterType::HighPass;
+	FilterPreset->Settings.CutoffFrequency = _cutofffrequency;
+	FilterPreset->Settings.FilterQ = _qfilter;
 }
 
 void APS_Player::BitcrusherSettings(const float& _samplerate, const float& _bitdepth)
 {
-	FSourceEffectBitCrusherBaseSettings bitcrushSettings;
-	bitcrushSettings.SampleRate = _samplerate;
-	bitcrushSettings.BitDepth = _bitdepth;
+	BitCrusherPreset->SetBits(_bitdepth);
+	BitCrusherPreset->SetSampleRate(_samplerate);
 
-	BitCrusherPreset->SetSettings(bitcrushSettings);
+	//BitCrusherPreset->SetSettings(bitcrushSettings);
 }
 
 bool APS_Player::_CreateSourceChain()
@@ -273,7 +292,7 @@ bool APS_Player::_CreateSourceChain()
 void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 {
 	FSourceEffectChainEntry chainEntry;
-	chainEntry.bBypass = true;
+	chainEntry.bBypass = false;
 	switch (effectPreset)
 	{
 	case EEffectPreset::EFilter:
@@ -309,6 +328,47 @@ void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed To Add Chain Entry"));
 	}
+}
+
+void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
+{
+	if (SourceChain == nullptr || SourceChain->Chain.Num() < 1)
+	{
+		return;
+	}
+	USoundEffectSourcePreset* presetToRemove;
+	switch (effectPreset)
+	{
+	case EEffectPreset::EFilter:
+		presetToRemove = FilterPreset;
+		break;
+	case EEffectPreset::EBitCrusher:
+		presetToRemove = BitCrusherPreset;
+		break;
+	case EEffectPreset::EEQ:
+		presetToRemove = EQPreset;
+		break;
+	case EEffectPreset::EStereoDelay:
+		presetToRemove = DelayPreset;
+		break;
+	default:
+		presetToRemove = nullptr;
+		break;
+	}
+
+	if (presetToRemove == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed To Remove Preset."));
+		return;
+	}
+
+	//for (auto entry : SourceChain->Chain)
+	//{
+	//	if ( presetToRemove)
+	//	{
+	//		SourceChain->Chain.RemoveSingle(entry);
+	//	}
+	//}
 }
 
 

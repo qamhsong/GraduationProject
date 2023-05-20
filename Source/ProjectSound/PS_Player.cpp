@@ -227,13 +227,16 @@ bool APS_Player::_CreateAllPreset()
 	BitCrusherPreset = NewObject<USourceEffectBitCrusherPreset>(USourceEffectBitCrusherPreset::StaticClass());
 	FSourceEffectBitCrusherSettings bitcrusherSettings;
 	
-	FilterPreset = NewObject<USourceEffectFilterPreset>(USourceEffectFilterPreset::StaticClass());
+	LowFilterPreset = NewObject<USourceEffectFilterPreset>(USourceEffectFilterPreset::StaticClass());
 	FSourceEffectFilterSettings filterSettings;
+
+	HighFilterPreset = NewObject<USourceEffectFilterPreset>(USourceEffectFilterPreset::StaticClass());
 
 	EffectPresets.Emplace(EQPreset);
 	EffectPresets.Emplace(DelayPreset);
 	EffectPresets.Emplace(BitCrusherPreset);
-	EffectPresets.Emplace(FilterPreset);
+	EffectPresets.Emplace(LowFilterPreset);
+	EffectPresets.Emplace(HighFilterPreset);
 		
 	return true;
 }
@@ -254,20 +257,20 @@ void APS_Player::LowPassFilterSettings(const float& _cutofffrequency, const floa
 	//filterSettings.AudioBusModulation = audiobus;
 
 //	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Debug %f"), filterSettings.CutoffFrequency));
-	FilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
-	FilterPreset->Settings.FilterType = ESourceEffectFilterType::LowPass;
-	FilterPreset->Settings.CutoffFrequency = _cutofffrequency;
-	FilterPreset->Settings.FilterQ = _qfilter;
+	LowFilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
+	LowFilterPreset->Settings.FilterType = ESourceEffectFilterType::LowPass;
+	LowFilterPreset->Settings.CutoffFrequency = _cutofffrequency;
+	LowFilterPreset->Settings.FilterQ = _qfilter;
 
 //	FilterPreset->SetSettings(filterSettings);
 }
 
-void APS_Player::_HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
+void APS_Player::HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
 {
-	FilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
-	FilterPreset->Settings.FilterType = ESourceEffectFilterType::HighPass;
-	FilterPreset->Settings.CutoffFrequency = _cutofffrequency;
-	FilterPreset->Settings.FilterQ = _qfilter;
+	LowFilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
+	HighFilterPreset->Settings.FilterType = ESourceEffectFilterType::HighPass;
+	HighFilterPreset->Settings.CutoffFrequency = _cutofffrequency;
+	HighFilterPreset->Settings.FilterQ = _qfilter;
 }
 
 void APS_Player::BitcrusherSettings(const float& _samplerate, const float& _bitdepth)
@@ -295,9 +298,12 @@ void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 	chainEntry.bBypass = false;
 	switch (effectPreset)
 	{
-	case EEffectPreset::EFilter:
-		chainEntry.Preset = FilterPreset;
+	case EEffectPreset::EFilterLow:
+		chainEntry.Preset = LowFilterPreset;
 		break;
+	case EEffectPreset::EFilterHigh:
+		chainEntry.Preset = HighFilterPreset;
+		break; 
 	case EEffectPreset::EEQ:
 		chainEntry.Preset = EQPreset;
 		break;
@@ -339,8 +345,11 @@ void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
 	USoundEffectSourcePreset* presetToRemove;
 	switch (effectPreset)
 	{
-	case EEffectPreset::EFilter:
-		presetToRemove = FilterPreset;
+	case EEffectPreset::EFilterLow:
+		presetToRemove = LowFilterPreset;
+		break;
+	case EEffectPreset::EFilterHigh:
+		presetToRemove = HighFilterPreset;
 		break;
 	case EEffectPreset::EBitCrusher:
 		presetToRemove = BitCrusherPreset;

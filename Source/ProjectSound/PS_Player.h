@@ -20,7 +20,8 @@ class USourceEffectFilterPreset;
 UENUM()
 enum class EEffectPreset : uint8
 {
-	EFilter = 0,
+	EFilterLow = 0,
+	EFilterHigh,
 	EEQ,
 	EBitCrusher,
 	EStereoDelay,
@@ -62,7 +63,10 @@ public:
 	USourceEffectBitCrusherPreset* BitCrusherPreset;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	USourceEffectFilterPreset* FilterPreset;
+	USourceEffectFilterPreset* LowFilterPreset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectFilterPreset* HighFilterPreset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<USoundEffectSourcePreset*> EffectPresets;
@@ -86,7 +90,7 @@ public:
 	void LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
 
 	UFUNCTION()
-	void _HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
+	void HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter);
 
 	UFUNCTION()
 	void BitcrusherSettings(const float& _samplerate, const float& _bitdepth);

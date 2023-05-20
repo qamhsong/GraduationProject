@@ -104,7 +104,7 @@ void UUI_Audio_LowPassFilter::_OnApplyLowPassFilter(UPSButton* sender)
 	}
 	if (_bLowPassFilterApplyState == true)
 	{
-		playerPawn->RemoveSourceChainEffect(EEffectPreset::EFilter);
+		playerPawn->RemoveSourceChainEffect(EEffectPreset::EFilterLow);
 		txt_lowpassfilter_state->SetText(FText::FromString(FString("APPLY")));
 		UE_LOG(LogTemp, Warning, TEXT("LowPassFilter Removed"));
 		_bLowPassFilterApplyState = false;
@@ -112,7 +112,7 @@ void UUI_Audio_LowPassFilter::_OnApplyLowPassFilter(UPSButton* sender)
 	else
 	{
 		playerPawn->LowPassFilterSettings(_CutFreqValue, _QFilterValue);
-		playerPawn->RegisterSourceChainEffect(EEffectPreset::EFilter);
+		playerPawn->RegisterSourceChainEffect(EEffectPreset::EFilterLow);
 		txt_lowpassfilter_state->SetText(FText::FromString(FString("REMOVE")));
 		UE_LOG(LogTemp, Warning, TEXT("LowPassFilter Applied"));
 		_bLowPassFilterApplyState = true;

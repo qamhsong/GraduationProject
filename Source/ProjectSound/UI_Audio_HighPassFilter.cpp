@@ -105,6 +105,13 @@ void UUI_Audio_HighPassFilter::_OnApplyHighPassFilter(UPSButton* sender)
 		playerPawn->RemoveSourceChainEffect(EEffectPreset::EFilterHigh);
 		txt_highpassfilter_state->SetText(FText::FromString(FString("APPLY")));
 		UE_LOG(LogTemp, Warning, TEXT("HighPass Filter Removed"));
+		_bHighPassFilterApplyState = false;
+	}
+	else
+	{
+		playerPawn->HighPassFilterSettings(_CutFreqValue, _QFilterValue);
+		playerPawn->RegisterSourceChainEffect(EEffectPreset::EFilterHigh);
+		txt_highpassfilter_state->SetText(FText::FromString(FString("REMOVE")));
 		_bHighPassFilterApplyState = true;
 	}
 }

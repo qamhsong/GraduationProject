@@ -15,6 +15,7 @@ class USoundEffectSourcePresetChain;
 class USourceEffectEQPreset;
 class USourceEffectBitCrusherPreset;
 class USourceEffectFilterPreset;
+class USourceEffectPhaserPreset;
 
 
 UENUM()
@@ -25,7 +26,21 @@ enum class EEffectPreset : uint8
 	EEQ,
 	EBitCrusher,
 	EStereoDelay,
+	EPhaser
 };
+
+UENUM()
+enum class EEffectPhaserLFOType : uint8
+{
+	Sine = 0,
+	Upsaw,
+	DownSaw,
+	Square,
+	Triangle,
+	Exponential,
+	RandomSampleHold,
+};
+
 
 UCLASS()
 class PROJECTSOUND_API APS_Player : public APawn
@@ -50,6 +65,7 @@ public:
 
 	FAudioDevice* AudioDevice;
 
+#pragma region SourceChain & Effects
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USoundEffectSourcePresetChain*  SourceChain;
 
@@ -68,6 +84,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USourceEffectFilterPreset* HighFilterPreset;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectPhaserPreset* PhaserPreset;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<USoundEffectSourcePreset*> EffectPresets;
 
@@ -77,12 +96,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EEffectPreset PresetToApply;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//FSourceEffectEQSettings EffectEQSettings;
-	// 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	//FSourceEffectStereoDelaySettings StereoDelaySettings;
+#pragma endregion
 
+
+#pragma region Effect Settings
 	UFUNCTION()
 	void _EQBandSettings(const float& _frequency, const float& _bandwidth, const float& _gaindb);
 
@@ -95,27 +112,37 @@ public:
 	UFUNCTION()
 	void BitcrusherSettings(const float& _samplerate, const float& _bitdepth);
 
-	UPROPERTY()
-	float VoiceCaptureVolume;
+	UFUNCTION()
+	void PhaserSettings_float(const float& _wetlevel, const float& _frequency, const float& _feedback);
 
-	UPROPERTY()
-	bool PlayVoiceCaptureFlag;
+	// Low Frequency Oscillator 효과 종류
+	UFUNCTION()
+	void PhaserSettings_LFO(EEffectPhaserLFOType _lfotype);
 
-	UPROPERTY()
-	FTimerHandle VoiceCaptureTickTimer;
+#pragma endregion
 
-	UPROPERTY()
-	FTimerHandle PlayVoiceCaptureTimer;
 
-	UPROPERTY()
-	USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
+	//UPROPERTY()
+	//float VoiceCaptureVolume;
 
-	UPROPERTY()
-	TArray<uint8> VoiceCaptureBuffer;
+	//UPROPERTY()
+	//bool PlayVoiceCaptureFlag;
 
-	TSharedPtr<class IVoiceCapture> VoiceCapture;
+	//UPROPERTY()
+	//FTimerHandle VoiceCaptureTickTimer;
 
-	float VoiceCaptureTime = 0;
+	//UPROPERTY()
+	//FTimerHandle PlayVoiceCaptureTimer;
+
+	//UPROPERTY()
+	//USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
+
+	//UPROPERTY()
+	//TArray<uint8> VoiceCaptureBuffer;
+
+	//TSharedPtr<class IVoiceCapture> VoiceCapture;
+
+	//float VoiceCaptureTime = 0;
 
 
 

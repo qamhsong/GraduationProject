@@ -117,7 +117,6 @@ void UUI_Audio_LowPassFilter::_OnApplyLowPassFilter(UPSButton* sender)
 		UE_LOG(LogTemp, Warning, TEXT("LowPassFilter Applied"));
 		_bLowPassFilterApplyState = true;
 	}
-	
 }
 
 void UUI_Audio_LowPassFilter::_OnRemoveLowPassFilter(UPSButton* sender)

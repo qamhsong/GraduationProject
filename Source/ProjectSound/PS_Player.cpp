@@ -15,6 +15,7 @@
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectEQ.h>
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectBitCrusher.h>
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectFilter.h>
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectPhaser.h>
 
 
 // Sets default values
@@ -219,24 +220,24 @@ void APS_Player::PlayAudio()
 bool APS_Player::_CreateAllPreset()
 {
 	EQPreset = NewObject<USourceEffectEQPreset>(USourceEffectEQPreset::StaticClass());
-	FSourceEffectEQSettings eqSettings;
 	
 	DelayPreset = NewObject<USourceEffectStereoDelayPreset>(USourceEffectStereoDelayPreset::StaticClass());
-	FSourceEffectStereoDelaySettings steredelaySettings;
 
 	BitCrusherPreset = NewObject<USourceEffectBitCrusherPreset>(USourceEffectBitCrusherPreset::StaticClass());
-	FSourceEffectBitCrusherSettings bitcrusherSettings;
 	
 	LowFilterPreset = NewObject<USourceEffectFilterPreset>(USourceEffectFilterPreset::StaticClass());
-	FSourceEffectFilterSettings filterSettings;
+
 
 	HighFilterPreset = NewObject<USourceEffectFilterPreset>(USourceEffectFilterPreset::StaticClass());
 
-	EffectPresets.Emplace(EQPreset);
-	EffectPresets.Emplace(DelayPreset);
-	EffectPresets.Emplace(BitCrusherPreset);
+	PhaserPreset = NewObject<USourceEffectPhaserPreset>(USourceEffectPhaserPreset::StaticClass());
+
+	//EffectPresets.Emplace(EQPreset);
+	//EffectPresets.Emplace(DelayPreset);
+	//EffectPresets.Emplace(BitCrusherPreset);
 	EffectPresets.Emplace(LowFilterPreset);
 	EffectPresets.Emplace(HighFilterPreset);
+	EffectPresets.Emplace(PhaserPreset);
 		
 	return true;
 }
@@ -281,6 +282,44 @@ void APS_Player::BitcrusherSettings(const float& _samplerate, const float& _bitd
 	//BitCrusherPreset->SetSettings(bitcrushSettings);
 }
 
+void APS_Player::PhaserSettings_float(const float& _wetlevel, const float& _frequency, const float& _feedback)
+{
+	PhaserPreset->Settings.WetLevel = _wetlevel;
+	PhaserPreset->Settings.Frequency = _frequency;
+	PhaserPreset->Settings.Feedback = _feedback;
+}
+
+void APS_Player::PhaserSettings_LFO(EEffectPhaserLFOType _lfotype)
+{
+	switch (_lfotype)
+	{
+	 case EEffectPhaserLFOType::Sine:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::Sine;
+		break;
+	case EEffectPhaserLFOType::Upsaw:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::UpSaw;
+		break;
+	case EEffectPhaserLFOType::DownSaw:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::DownSaw;
+		break;
+	case EEffectPhaserLFOType::Square:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::Square;
+		break;
+	case EEffectPhaserLFOType::Triangle:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::Triangle;
+		break;
+	case EEffectPhaserLFOType::Exponential:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::Exponential;
+		break;
+	case EEffectPhaserLFOType::RandomSampleHold:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::RandomSampleHold;
+		break;
+	default:
+		PhaserPreset->Settings.LFOType = EPhaserLFOType::Sine;
+		break;
+	}
+}
+
 bool APS_Player::_CreateSourceChain()
 {
 	SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
@@ -314,6 +353,9 @@ void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 	case EEffectPreset::EStereoDelay:
 		chainEntry.Preset = DelayPreset;
 		break;
+	case EEffectPreset::EPhaser:
+		chainEntry.Preset = PhaserPreset;
+		break;
 	default:
 		chainEntry.Preset = nullptr;
 		break;
@@ -325,7 +367,7 @@ void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 		return;
 
 
-	SourceChain->Chain.Emplace(chainEntry);
+	SourceChain->Chain.Add(chainEntry);
 	if (SourceChain->Chain.Num() > 0)
 	{
 		AudioComponent->SetSourceEffectChain(SourceChain);
@@ -371,13 +413,18 @@ void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
 		return;
 	}
 
-	//for (auto entry : SourceChain->Chain)
-	//{
-	//	if ( presetToRemove)
-	//	{
-	//		SourceChain->Chain.RemoveSingle(entry);
-	//	}
-	//}
+	for (int32  i= 0; i < SourceChain->Chain.Num(); i++)
+	{
+		if (SourceChain->Chain[i].Preset == presetToRemove)
+		{
+			if (SourceChain->Chain.IsValidIndex(i))
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Remove Index : %d"), i));
+				SourceChain->Chain.RemoveAt(i);
+				UE_LOG(LogTemp, Warning, TEXT("REMOVED"));
+			}
+		}
+	}
 }
 
 

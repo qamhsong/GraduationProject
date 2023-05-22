@@ -249,21 +249,10 @@ void APS_Player::_EQBandSettings(const float& _frequency, const float& _bandwidt
 
 void APS_Player::LowPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)
 {
-	//FSourceEffectFilterSettings filterSettings;
-	//filterSettings.FilterCircuit = ESourceEffectFilterCircuit::OnePole;
-	//filterSettings.FilterType = ESourceEffectFilterType::LowPass;
-	//filterSettings.CutoffFrequency = 500.f;
-	//filterSettings.FilterQ = .5f;
-	//TArray<FSourceEffectFilterAudioBusModulationSettings> audiobus;
-	//filterSettings.AudioBusModulation = audiobus;
-
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Debug %f"), filterSettings.CutoffFrequency));
 	LowFilterPreset->Settings.FilterCircuit = ESourceEffectFilterCircuit::StateVariable;
 	LowFilterPreset->Settings.FilterType = ESourceEffectFilterType::LowPass;
 	LowFilterPreset->Settings.CutoffFrequency = _cutofffrequency;
 	LowFilterPreset->Settings.FilterQ = _qfilter;
-
-//	FilterPreset->SetSettings(filterSettings);
 }
 
 void APS_Player::HighPassFilterSettings(const float& _cutofffrequency, const float& _qfilter)

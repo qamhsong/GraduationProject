@@ -28,5 +28,12 @@ void UUI_AudioOption::_OnShow()
 			UE_LOG(LogTemp, Warning, TEXT("show vertical box children"));
 		 }
 	}
- 
+	
+	for (auto widget : vbox_option_list_right->GetAllChildren())
+	{
+		if (UUI_Base* castWidget = Cast<UUI_Base>(widget))
+		{
+			castWidget->OnWidgetCalledFromParent();
+		}
+	}
 }

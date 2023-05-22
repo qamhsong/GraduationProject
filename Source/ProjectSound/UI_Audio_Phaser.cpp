@@ -38,6 +38,10 @@ void UUI_Audio_Phaser::_OnWidgetCalledFromParent()
 	slider_frequency->OnValueChanged.AddDynamic(this, &UUI_Audio_Phaser::_OnFrequencySliderValueChange);
 	slider_feedback->OnValueChanged.AddDynamic(this, &UUI_Audio_Phaser::_OnFeedbackSliderValueChange);
 
+	edtxt_wetlevel->OnTextCommitted.AddDynamic(this, &UUI_Audio_Phaser::_OnWetLevelTxtChangeCommit);
+	edtxt_frequency->OnTextCommitted.AddDynamic(this, &UUI_Audio_Phaser::_OnFrequencyTxtChangeCommit);
+	edtxt_feedback->OnTextCommitted.AddDynamic(this, &UUI_Audio_Phaser::_OnFeedbackTxtChangeCommit);
+
 	cb_sine->OnCheckStateChanged.AddDynamic(this, &UUI_Audio_Phaser::_OnCheckLFOOption_Sine);
 	cb_upsaw->OnCheckStateChanged.AddDynamic(this, &UUI_Audio_Phaser::_OnCheckLFOOption_UpSaw);
 	cb_downsaw->OnCheckStateChanged.AddDynamic(this, &UUI_Audio_Phaser::_OnCheckLFOOption_DownSaw);
@@ -114,7 +118,7 @@ void UUI_Audio_Phaser::SetFeedbackSliderValue(float currentValue, float minValue
 
 	slider_feedback->SetMinValue(_MinFeedbackValue);
 	slider_feedback->SetMaxValue(_MaxFeedbackValue);
-	slider_feedback->SetMinValue(_FeedbackValue);
+	slider_feedback->SetValue(_FeedbackValue);
 
 	_CheckFeedbackValue(_FeedbackValue);
 	playerPawn->PhaserSettings_float(_WetLevelValue, _FrequencyValue, _FeedbackValue);
@@ -352,13 +356,13 @@ void UUI_Audio_Phaser::_CheckFrequencyValue(float value)
 	if (_FrequencyValue <= _MinFrequencyValue)
 	{
 		_FrequencyValue = _MinFrequencyValue;
-		edtxt_wetlevel->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _FrequencyValue)));
+		edtxt_frequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _FrequencyValue)));
 	}
 
 	if (_FrequencyValue >= _MaxFrequencyValue)
 	{
 		_FrequencyValue = _MaxFrequencyValue;
-		edtxt_wetlevel->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _FrequencyValue)));
+		edtxt_frequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _FrequencyValue)));
 	}
 }
 
@@ -366,13 +370,13 @@ void UUI_Audio_Phaser::_CheckFeedbackValue(float value)
 {
 	if (_FeedbackValue <= _MinFeedbackValue)
 	{
-		_FrequencyValue = _MinFeedbackValue;
+		_FeedbackValue = _MinFeedbackValue;
 		edtxt_feedback->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _FeedbackValue)));
 	}
 
-	if (_FrequencyValue >= _MaxFeedbackValue)
+	if (_FeedbackValue >= _MaxFeedbackValue)
 	{
-		_FrequencyValue = _MaxFeedbackValue;
+		_FeedbackValue = _MaxFeedbackValue;
 		edtxt_feedback->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _FeedbackValue)));
 	}
 }

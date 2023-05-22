@@ -25,7 +25,8 @@ void UUI_Audio_HighPassFilter::_OnCreate()
 
 	slider_cutfrequency->OnValueChanged.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnCutFrequencySliderValueChange);
 	slider_qfilter->OnValueChanged.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnQFilterSliderValueChange);
-
+	edtxt_cutfrequency->OnTextCommitted.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnCutFrequencyTxtChangeCommit);
+	edtxt_qfilter->OnTextCommitted.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnQFilterTxtChangeCommit);
 }
 
 void UUI_Audio_HighPassFilter::_OnShow()
@@ -45,6 +46,9 @@ void UUI_Audio_HighPassFilter::_OnWidgetCalledFromParent()
 
 	slider_cutfrequency->OnValueChanged.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnCutFrequencySliderValueChange);
 	slider_qfilter->OnValueChanged.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnQFilterSliderValueChange);
+
+	edtxt_cutfrequency->OnTextCommitted.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnCutFrequencyTxtChangeCommit);
+	edtxt_qfilter->OnTextCommitted.AddDynamic(this, &UUI_Audio_HighPassFilter::_OnQFilterTxtChangeCommit);
 
 	UPS_GameInstance* gInst = UPS_GameInstance::GetMyInstance();
 	if (gInst == nullptr)

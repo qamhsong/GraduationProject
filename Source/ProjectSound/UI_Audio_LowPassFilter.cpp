@@ -47,6 +47,9 @@ void UUI_Audio_LowPassFilter::_OnWidgetCalledFromParent()
 
 	slider_cutfrequency->OnValueChanged.AddDynamic(this, &UUI_Audio_LowPassFilter::_OnCutFrequencySliderValueChange);
 	slider_qfilter->OnValueChanged.AddDynamic(this, &UUI_Audio_LowPassFilter::_OnQFilterSliderValueChange);
+	edtxt_cutfrequency->OnTextCommitted.AddDynamic(this, &UUI_Audio_LowPassFilter::_OnCutFrequencyTxtChangeCommit);
+	edtxt_qfilter->OnTextCommitted.AddDynamic(this, &UUI_Audio_LowPassFilter::_OnQFilterTxtChangeCommit);
+
 
 	UPS_GameInstance* gInst = UPS_GameInstance::GetMyInstance();
 	if (gInst == nullptr)
@@ -232,6 +235,7 @@ void UUI_Audio_LowPassFilter::_CheckCutFrequencyValue(float value)
 	{
 		_CutFreqValue = _MaxCutFreqValue;
 		edtxt_cutfrequency->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _CutFreqValue)));
+		UE_LOG(LogTemp, Warning, TEXT("CutFrequency Check"));
 	}
 }
 

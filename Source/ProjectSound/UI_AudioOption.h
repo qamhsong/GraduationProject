@@ -31,6 +31,10 @@ public:
 	UVerticalBox* vbox_option_list;
 
 	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* vbox_option_list_right;
+
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* txt_AudioSettings;
 
 };

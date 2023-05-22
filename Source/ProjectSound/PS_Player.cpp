@@ -391,6 +391,8 @@ void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
 	case EEffectPreset::EStereoDelay:
 		presetToRemove = DelayPreset;
 		break;
+	case EEffectPreset::EPhaser:
+		presetToRemove = PhaserPreset;
 	default:
 		presetToRemove = nullptr;
 		break;

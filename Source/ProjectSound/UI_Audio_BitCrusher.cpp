@@ -51,8 +51,8 @@ void UUI_Audio_BitCrusher::_OnWidgetCalledFromParent()
 
 	playerPawn = Cast<APS_Player>(UGameplayStatics::GetPlayerPawn(world, 0));
 
-	_BitDepthValue = 500.f;
-	_SampleRateValue = 1.f;
+	_BitDepthValue = 1.f;
+	_SampleRateValue = 500.f;
 }
 
 void UUI_Audio_BitCrusher::SetBitDepthSliderValue(float currentValue, float minValue, float maxValue)

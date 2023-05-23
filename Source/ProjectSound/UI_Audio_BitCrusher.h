@@ -80,16 +80,16 @@ public:
 	float _SampleRateValue;
 
 	UPROPERTY()
-	float _MinBitDepthValue = 500.f;
+	float _MinBitDepthValue = 1.f;
 
 	UPROPERTY()
-	float _MaxBitDepthValue = 16000.f;
+	float _MaxBitDepthValue = 16.f;
 
 	UPROPERTY()
-	float _MinSampleRateValue = 1.f;
+	float _MinSampleRateValue = 500.f;
 
 	UPROPERTY()
-	float _MaxSampleRateValue = 16.f;
+	float _MaxSampleRateValue = 16000.f;
 
 	UPROPERTY()
 	bool _bBitCrushApplyState = false;

@@ -234,7 +234,7 @@ bool APS_Player::_CreateAllPreset()
 
 	//EffectPresets.Emplace(EQPreset);
 	//EffectPresets.Emplace(DelayPreset);
-	//EffectPresets.Emplace(BitCrusherPreset);
+	EffectPresets.Emplace(BitCrusherPreset);
 	EffectPresets.Emplace(LowFilterPreset);
 	EffectPresets.Emplace(HighFilterPreset);
 	EffectPresets.Emplace(PhaserPreset);
@@ -393,6 +393,7 @@ void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
 		break;
 	case EEffectPreset::EPhaser:
 		presetToRemove = PhaserPreset;
+		break;
 	default:
 		presetToRemove = nullptr;
 		break;

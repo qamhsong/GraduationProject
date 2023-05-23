@@ -16,6 +16,7 @@
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectBitCrusher.h>
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectFilter.h>
 #include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectPhaser.h>
+#include <../../Synthesis/Source/Synthesis/Classes/SourceEffects/SourceEffectChorus.h>
 
 
 // Sets default values
@@ -232,12 +233,15 @@ bool APS_Player::_CreateAllPreset()
 
 	PhaserPreset = NewObject<USourceEffectPhaserPreset>(USourceEffectPhaserPreset::StaticClass());
 
+	ChorusPreset = NewObject<USourceEffectChorusPreset>(USourceEffectChorusPreset::StaticClass());
+
 	//EffectPresets.Emplace(EQPreset);
 	//EffectPresets.Emplace(DelayPreset);
 	EffectPresets.Emplace(BitCrusherPreset);
 	EffectPresets.Emplace(LowFilterPreset);
 	EffectPresets.Emplace(HighFilterPreset);
 	EffectPresets.Emplace(PhaserPreset);
+	EffectPresets.Emplace(ChorusPreset);
 		
 	return true;
 }
@@ -309,6 +313,25 @@ void APS_Player::PhaserSettings_LFO(EEffectPhaserLFOType _lfotype)
 	}
 }
 
+void APS_Player::ChorusSettings(const float& _depth, const float& _frequency, const float& _feedback, const float& _wetlevel, const float& _drylevel, const float& _spread)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Depth %f"), _depth));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Frequency %f"), _frequency));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Feedback %f"), _feedback));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WetLevel %f"), _wetlevel));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("DryLevel %f"), _drylevel));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Spread %f"), _spread));
+
+	//ChorusPreset->SetSettings(FSourceEffectChorusBaseSettings{ _depth, _frequency, _feedback, _wetlevel, _drylevel, _spread });
+	ChorusPreset->SetDepth(_drylevel);
+	ChorusPreset->Settings.Depth = _depth;
+	ChorusPreset->Settings.Frequency = _frequency;
+	ChorusPreset->Settings.Feedback = _feedback;
+	ChorusPreset->Settings.WetLevel = _wetlevel;
+	ChorusPreset->Settings.DryLevel = _drylevel;
+	ChorusPreset->Settings.Spread = _spread;
+}
+
 bool APS_Player::_CreateSourceChain()
 {
 	SourceChain = NewObject<USoundEffectSourcePresetChain>(USoundEffectSourcePresetChain::StaticClass());
@@ -337,13 +360,15 @@ void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 		break;
 	case EEffectPreset::EBitCrusher:
 		chainEntry.Preset = BitCrusherPreset;
-		UE_LOG(LogTemp,Warning , TEXT("BitCrusher Applied"));
 		break;
 	case EEffectPreset::EStereoDelay:
 		chainEntry.Preset = DelayPreset;
 		break;
 	case EEffectPreset::EPhaser:
 		chainEntry.Preset = PhaserPreset;
+		break;
+	case EEffectPreset::EChorus:
+		chainEntry.Preset = ChorusPreset;
 		break;
 	default:
 		chainEntry.Preset = nullptr;
@@ -393,6 +418,9 @@ void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
 		break;
 	case EEffectPreset::EPhaser:
 		presetToRemove = PhaserPreset;
+		break;
+	case EEffectPreset::EChorus:
+		presetToRemove = ChorusPreset;
 		break;
 	default:
 		presetToRemove = nullptr;

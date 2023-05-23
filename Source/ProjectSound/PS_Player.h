@@ -16,7 +16,7 @@ class USourceEffectEQPreset;
 class USourceEffectBitCrusherPreset;
 class USourceEffectFilterPreset;
 class USourceEffectPhaserPreset;
-
+class USourceEffectChorusPreset;
 
 UENUM()
 enum class EEffectPreset : uint8
@@ -26,7 +26,8 @@ enum class EEffectPreset : uint8
 	EEQ,
 	EBitCrusher,
 	EStereoDelay,
-	EPhaser
+	EPhaser,
+	EChorus
 };
 
 UENUM()
@@ -87,6 +88,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USourceEffectPhaserPreset* PhaserPreset;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USourceEffectChorusPreset* ChorusPreset;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<USoundEffectSourcePreset*> EffectPresets;
 
@@ -119,33 +123,10 @@ public:
 	UFUNCTION()
 	void PhaserSettings_LFO(EEffectPhaserLFOType _lfotype);
 
+	UFUNCTION()
+	void ChorusSettings(const float& _depth, const float& _frequency, const float& _feedback, const float& _wetlevel, const float& _drylevel, const float& _spread);
+
 #pragma endregion
-
-
-	//UPROPERTY()
-	//float VoiceCaptureVolume;
-
-	//UPROPERTY()
-	//bool PlayVoiceCaptureFlag;
-
-	//UPROPERTY()
-	//FTimerHandle VoiceCaptureTickTimer;
-
-	//UPROPERTY()
-	//FTimerHandle PlayVoiceCaptureTimer;
-
-	//UPROPERTY()
-	//USoundWaveProcedural* VoiceCaptureSoundWaveProcedural;
-
-	//UPROPERTY()
-	//TArray<uint8> VoiceCaptureBuffer;
-
-	//TSharedPtr<class IVoiceCapture> VoiceCapture;
-
-	//float VoiceCaptureTime = 0;
-
-
-
 
 protected:
 	// Called when the game starts or when spawned

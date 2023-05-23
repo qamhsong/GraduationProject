@@ -39,6 +39,9 @@ public:
 	UTextBlock* txt_chorus;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* txt_chorus_state;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* txt_depth;
 
 	UPROPERTY(meta = (BindWidget))
@@ -113,6 +116,26 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	USlider* slider_spread;
 
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* edtxt_depth;
+
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* edtxt_frequency;
+
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* edtxt_feedback;
+
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* edtxt_wetlevel;
+
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* edtxt_drylevel;
+
+	UPROPERTY(meta = (BindWidget))
+	UEditableText* edtxt_spread;
+
+
+
 	UPROPERTY()
 	float _DepthValue;
 
@@ -132,40 +155,43 @@ public:
 	float _SpreadValue;
 
 	UPROPERTY()
-	float _MinDepthValue;
+	float _MinDepthValue = 0.f;
 
 	UPROPERTY()
-	float _MaxDepthValue;
+	float _MaxDepthValue = 1.f;
 
 	UPROPERTY()
-	float _MinFrequencyValue;
+	float _MinFrequencyValue = 0.f;
 
 	UPROPERTY()
-	float _MaxFrequencyValue;
+	float _MaxFrequencyValue = 1.f;
 
 	UPROPERTY()
-	float _MinFeedbackValue;
+	float _MinFeedbackValue = 0.f;
 
 	UPROPERTY()
-	float _MaxFeedbackValue;
+	float _MaxFeedbackValue = 1.f;
 
 	UPROPERTY()
-	float _MinWetLevelValue;
+	float _MinWetLevelValue = 0.f;
 
 	UPROPERTY()
-	float _MaxWetLevelValue;
+	float _MaxWetLevelValue = 1.f;
 
 	UPROPERTY()
-	float _MinDryLevelValue;
+	float _MinDryLevelValue = 0.f;
 
 	UPROPERTY()
-	float _MaxDryLevelValue;
+	float _MaxDryLevelValue = 1.f;
 
 	UPROPERTY()
-	float _MinSpreadValue;
+	float _MinSpreadValue = 0.f;
 
 	UPROPERTY()
-	float _MaxSpreadValue;
+	float _MaxSpreadValue = 1.f;
+
+	UPROPERTY()
+	bool _bChorusApplyState = false;
 
 	void SetDepthSliderValue(float currentValue, float minValue, float maxValue);
 
@@ -191,68 +217,68 @@ public:
 	UFUNCTION()
 	void _OnFeedbackSliderValueChange(float sliderValue);
 
-	//UFUNCTION()
-	//void _OnWetLevelSliderValueChange(float sliderValue);
+	UFUNCTION()
+	void _OnWetLevelSliderValueChange(float sliderValue);
 
-	//UFUNCTION()
-	//void _OnDryLevelSliderValueChange(float sliderValue);
+	UFUNCTION()
+	void _OnDryLevelSliderValueChange(float sliderValue);
 
-	//UFUNCTION()
-	//void _OnSpreadSliderValueChange(float sliderValue);
+	UFUNCTION()
+	void _OnSpreadSliderValueChange(float sliderValue);
 
-	//UFUNCTION()
-	//void _OnDepthClickMinus(UPSButton* sender);
+	UFUNCTION()
+	void _OnDepthClickMinus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnDepthClickPlus(UPSButton* sender);
+	UFUNCTION()
+	void _OnDepthClickPlus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnFrequencyClickMinus(UPSButton* sender);
+	UFUNCTION()
+	void _OnFrequencyClickMinus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnFrequencyClickPlus(UPSButton* sender);
+	UFUNCTION()
+	void _OnFrequencyClickPlus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnFeedbackClickMinus(UPSButton* sender);
+	UFUNCTION()
+	void _OnFeedbackClickMinus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnFeedbackClickPlus(UPSButton* sender);
+	UFUNCTION()
+	void _OnFeedbackClickPlus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnWetLevelClickMinus(UPSButton* sender);
+	UFUNCTION()
+	void _OnWetLevelClickMinus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnWetLevelClickPlus(UPSButton* sender);
+	UFUNCTION()
+	void _OnWetLevelClickPlus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnDryLevelClickMinus(UPSButton* sender);
+	UFUNCTION()
+	void _OnDryLevelClickMinus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnDryLevelClickPus(UPSButton* sender);
+	UFUNCTION()
+	void _OnDryLevelClickPlus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnSpreadClickMinus(UPSButton* sender);
+	UFUNCTION()
+	void _OnSpreadClickMinus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _OnSpreadClickPlus(UPSButton* sender);
+	UFUNCTION()
+	void _OnSpreadClickPlus(UPSButton* sender);
 
-	//UFUNCTION()
-	//void _CheckDepthValue(float value);
+	UFUNCTION()
+	void _CheckDepthValue(float value);
 
-	//UFUNCTION()
-	//void _CheckFrequencyValue(float value);
+	UFUNCTION()
+	void _CheckFrequencyValue(float value);
 
-	//UFUNCTION()
-	//void _CheckFeedbackValue(float value);
+	UFUNCTION()
+	void _CheckFeedbackValue(float value);
 
-	//UFUNCTION()
-	//void _CheckWetLevelValue(float value);
+	UFUNCTION()
+	void _CheckWetLevelValue(float value);
 
-	//UFUNCTION()
-	//void _CheckDryLevelValue(float value);
+	UFUNCTION()
+	void _CheckDryLevelValue(float value);
 
-	//UFUNCTION()
-	//void _CheckSpreadValue(float value);
+	UFUNCTION()
+	void _CheckSpreadValue(float value);
 
 
 

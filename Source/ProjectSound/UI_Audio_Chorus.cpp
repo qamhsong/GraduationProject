@@ -212,13 +212,14 @@ void UUI_Audio_Chorus::_OnDryLevelSliderValueChange(float sliderValue)
 
 	_CheckDryLevelValue(_DryLevelValue);
 	playerPawn->ChorusSettings(_DepthValue, _FrequencyValue, _FeedbackValue, _WetLevelValue, _DryLevelValue, _SpreadValue);
+
 }
 
 void UUI_Audio_Chorus::_OnWetLevelSliderValueChange(float sliderValue)
 {
 	_WetLevelValue = sliderValue;
 	slider_wetlevel->SetValue(_WetLevelValue);
-	edtxt_wetlevel->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _DryLevelValue)));
+	edtxt_wetlevel->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _WetLevelValue)));
 
 	_CheckWetLevelValue(_WetLevelValue);
 	playerPawn->ChorusSettings(_DepthValue, _FrequencyValue, _FeedbackValue, _WetLevelValue, _DryLevelValue, _SpreadValue);
@@ -320,7 +321,7 @@ void UUI_Audio_Chorus::_OnDryLevelClickMinus(UPSButton* sender)
 	slider_drylevel->SetValue(_DryLevelValue);
 	edtxt_drylevel->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _DryLevelValue)));
 
-	_CheckWetLevelValue(_DryLevelValue);
+	_CheckDryLevelValue(_DryLevelValue);
 	playerPawn->ChorusSettings(_DepthValue, _FrequencyValue, _FeedbackValue, _WetLevelValue, _DryLevelValue, _SpreadValue);
 }
 
@@ -330,7 +331,7 @@ void UUI_Audio_Chorus::_OnDryLevelClickPlus(UPSButton* sender)
 	slider_drylevel->SetValue(_DryLevelValue);
 	edtxt_drylevel->SetText(FText::FromString(FString::Printf(TEXT("%.3f"), _DryLevelValue)));
 
-	_CheckWetLevelValue(_DryLevelValue);
+	_CheckDryLevelValue(_DryLevelValue);
 	playerPawn->ChorusSettings(_DepthValue, _FrequencyValue, _FeedbackValue, _WetLevelValue, _DryLevelValue, _SpreadValue);
 }
 

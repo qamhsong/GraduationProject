@@ -96,7 +96,8 @@ void APS_Player::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		}
 	}
 	SourceChain->ConditionalBeginDestroy();
-
+	AudioComponent->Sound = nullptr;
+	AudioComponent->SourceEffectChain = nullptr;
 
 }
 
@@ -106,21 +107,21 @@ void APS_Player::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// 비실시간 Fast Fourier Transform 데이터 획득 여부 확인 코드
-	if (AudioComponent->IsPlaying())
-	{
-		if(FrequenciesToGet.Num() <= 0)
-		{
-			return;
-		}
-		if (AudioComponent->GetCookedFFTData(FrequenciesToGet, OutSoundWaveSpectralData))
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Debug %f"), OutSoundWaveSpectralData[0].FrequencyHz));
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("NO COOKED FFTDATA")));
-		}
-	}
+	//if (AudioComponent->IsPlaying())
+	//{
+	//	if(FrequenciesToGet.Num() <= 0)
+	//	{
+	//		return;
+	//	}
+	//	if (AudioComponent->GetCookedFFTData(FrequenciesToGet, OutSoundWaveSpectralData))
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Debug %f"), OutSoundWaveSpectralData[0].FrequencyHz));
+	//	}
+	//	else
+	//	{
+	//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("NO COOKED FFTDATA")));
+	//	}
+	//}
 
 }
 
@@ -315,21 +316,13 @@ void APS_Player::PhaserSettings_LFO(EEffectPhaserLFOType _lfotype)
 
 void APS_Player::ChorusSettings(const float& _depth, const float& _frequency, const float& _feedback, const float& _wetlevel, const float& _drylevel, const float& _spread)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Depth %f"), _depth));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Frequency %f"), _frequency));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Feedback %f"), _feedback));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WetLevel %f"), _wetlevel));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("DryLevel %f"), _drylevel));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Spread %f"), _spread));
+	ChorusPreset->SetDepth(_depth);
+	ChorusPreset->SetFrequency(_frequency);
+	ChorusPreset->SetFeedback(_feedback);
+	ChorusPreset->SetWet(_wetlevel);
+	ChorusPreset->SetDry(_drylevel);
+	ChorusPreset->SetSpread(_spread);
 
-	//ChorusPreset->SetSettings(FSourceEffectChorusBaseSettings{ _depth, _frequency, _feedback, _wetlevel, _drylevel, _spread });
-	ChorusPreset->SetDepth(_drylevel);
-	ChorusPreset->Settings.Depth = _depth;
-	ChorusPreset->Settings.Frequency = _frequency;
-	ChorusPreset->Settings.Feedback = _feedback;
-	ChorusPreset->Settings.WetLevel = _wetlevel;
-	ChorusPreset->Settings.DryLevel = _drylevel;
-	ChorusPreset->Settings.Spread = _spread;
 }
 
 bool APS_Player::_CreateSourceChain()
@@ -338,7 +331,7 @@ bool APS_Player::_CreateSourceChain()
 
 	if (SourceChain == nullptr)
 	{
-		return false;
+		return false;   
 	}
 	return true;
 }
@@ -385,6 +378,12 @@ void APS_Player::RegisterSourceChainEffect(EEffectPreset effectPreset)
 	if (SourceChain->Chain.Num() > 0)
 	{
 		AudioComponent->SetSourceEffectChain(SourceChain);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Depth %f"), ChorusPreset->Settings.Depth));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Frequency %f"), ChorusPreset->Settings.Frequency));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Feedback %f"), ChorusPreset->Settings.Feedback));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WetLevel %f"), ChorusPreset->Settings.WetLevel));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("DryLevel %f"), ChorusPreset->Settings.DryLevel));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Spread %f"), ChorusPreset->Settings.Spread));
 	}
 	else
 	{
@@ -439,7 +438,7 @@ void APS_Player::RemoveSourceChainEffect(EEffectPreset effectPreset)
 		{
 			if (SourceChain->Chain.IsValidIndex(i))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Remove Index : %d"), i));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Remove Index : %d"), i));
 				SourceChain->Chain.RemoveAt(i);
 				UE_LOG(LogTemp, Warning, TEXT("REMOVED"));
 			}

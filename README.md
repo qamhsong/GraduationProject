@@ -21,7 +21,7 @@ Workstation)와 같은 미들웨어(Middleware)에서 사운드를 제작하여 
 
 ### 시스템 요구 사항 및 세팅
 
-1.<img src="https://img.shields.io/badge/React-0E1128?style=flat&logo=React&logoColor=white"/> Unreal Engine 4.27.2 다운로드  https://www.unrealengine.com/en-US/download
+1. Unreal Engine 4.27.2 다운로드  https://www.unrealengine.com/en-US/download
 2. 프로젝트 압축 파일 다운로드 및 압축 해제
 3. ProjectSound.uproject 파일 우 클릭 후 Generate Visual Studio project files 클릭
 ![image](https://github.com/qamhsong/GraduationProject/assets/114596581/829ceaf3-fae8-4eae-ba83-6f70e4cc751e)

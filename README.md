@@ -17,6 +17,11 @@ Workstation)와 같은 미들웨어(Middleware)에서 사운드를 제작하여 
 엔진(Unreal Engine 4)를 활용하여 소리를 직접 실시간, 비실시간 변조가
 가능한 사운드 제작 시스템을 구현하고자 한다. 
 
+## 프로젝트 목표
+
+최근 AI 기술 및 게임 엔진의 발달로 프로그래머가 아니더라도 비주얼 스크립팅(Visual Scripting)등으로 게임을 제작할 수 있는 시대가 도래하고 있다.
+게임 업계에서 보편적으로 사용되는 WWise와 같은 외부 사운드 미들웨어(MiddleWare)는 인디 게임 개발자 또는 개발 입문자들이 사용하기에는 비용적으로 부담되고 진입 장벽이 높다. 따라서 본 프로젝트는 UI 툴을 통해 원하는 사운드 이펙트를 추가하여 게임 개발에 필요한 사운드를 제작할 수 있는 저작 도구를 제공하고자 한다.
+
 ## 설치 및 사용 방법
 
 ### 시스템 요구 사항 및 세팅
@@ -41,12 +46,20 @@ Workstation)와 같은 미들웨어(Middleware)에서 사운드를 제작하여 
 4. Start 버튼 클릭 이후 UI_Audio_Settings 화면 확인
 ![image](https://github.com/qamhsong/GraduationProject/assets/114596581/b6a5e57a-c01a-4ce3-ba75-be8da464e832)
 
+5. Audio Capture 영역에 있는 OFF 버튼을 클릭하여 원본 사운드 녹음을 진행한다.
+6. 녹음이 완료되고 활성화되는 PLAY 버튼을 통해 원본 사운드 확인이 가능하다.
+7. 원하는 사운드 이펙트의 파라미터를 +- 버튼, 슬라이더, 편집 가능한 텍스트 등으로 조절한 뒤 APPLY 버튼을 클릭하여 적용할 수 있다.
+8. 다른 사운드 이펙트를 5 번과 같은 방법으로 추가하거나 이미 적용된 이펙트를 REMOVE 버튼으로 제거할 수 있다.
+9. APPLY를 통해 원하는 이펙트를 적용한 뒤 다시 PLAY 버튼을 클릭하여 변조된 사운드를 확인할 수 있다.
+10. 원하는 사운드가 만들어지면 Content 폴더에 있는 test.uasset 오디오 wav파일을 자신의 프로젝트에 이주(Migrate)하여 사용할 수 있다.
+
+
 ## Audio Settings
 
 ### Audio Capture
 
 Audio Capture Plugin을 통해 동작. 마이크 입력 관련 선택을 하는 UI 영역
-* RT(RealTime) :  실시간 오디오 변조를 선택하는 버튼
+* RT(RealTime) :  실시간 오디오 변조를 선택하는 버튼. 자신이 이미 원하는 이펙트 세팅이 있다면 에디터 내에서 이펙트 등록을 통해 실시간으로 결과를 확인할 수 있다. 
 * OFF : 비실시간 오디오 변조를 선택하는 버튼. 클릭 시 오디오 녹음이 시작되며 텍스트가 ON으로 변경된다. ON 상태에서 다시 클릭 시 녹음 종료
 * PLAY : OFF 버튼을 통해 오디오 비실시간 녹음을 완료했을 때 활성화 되는 버튼. 등록한 오디오 이펙트가 적용되어 오디오가 재생된다.
 
@@ -68,7 +81,7 @@ Audio Source Effect Preset 중 하나로 신호의 위상차를 이용하여 소
 * WetLevel : Phaser 효과의 강도를 조절. 높게 설정시 효과가 강해지고 낮게 설정하면 효과가 약해짐
 * Frequency : Phaser 효과가 발생하는 주파수를 조절.
 * Feedback : Phaser 효과가 발생하는 횟수를 조절. 높게 설정시 여러 번 발생하고 낮게 설정 시 빈도가 적게 발생
-* LFO(Low Frequency Oscillator) Type : Phaser 효과가 발생한느 방식을 결정.
+* LFO(Low Frequency Oscillator) Type : Phaser 효과가 발생하는 방식을 결정.
 
 ### Chorus
 

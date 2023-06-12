@@ -36,7 +36,7 @@ Workstation)와 같은 미들웨어(Middleware)에서 사운드를 제작하여 
 6. UE4 Editor 실행 이후 월드 세팅-> GameMode -> 게임 모드 오버라이드에서 BP_TestGameMode 체크
 ![2023-06-11 20 36 59](https://github.com/qamhsong/GraduationProject/assets/114596581/d2a5d912-a772-420b-a2c0-58c15e85643a)
 
-### 프로젝트 사용 방법
+### 프로젝트 시나리오
 
 1. 프로젝트 실행 이후 UE4 Editor 상단 툴바에서 플레이 버튼 클릭
 ![image](https://github.com/qamhsong/GraduationProject/assets/114596581/6eb102ef-06b7-4294-b849-0076ca16b17f)
